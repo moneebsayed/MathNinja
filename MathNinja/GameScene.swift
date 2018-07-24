@@ -22,6 +22,10 @@ class GameScene: SKScene {
     
     var enemyFire: SKSpriteNode = SKSpriteNode()
     
+    var daySky: SKSpriteNode = SKSpriteNode()
+    
+    var nightSky: SKSpriteNode = SKSpriteNode()
+    
     let happyArray = ["Great Job!","Keep it Up!", "Nice!", "Take That!", "WOOHOO!", "Math Punch!", "Bam!", "Pow!"]
     
     override func didMove(to view: SKView) {

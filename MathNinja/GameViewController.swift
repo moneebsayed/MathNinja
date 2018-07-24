@@ -11,10 +11,16 @@ import SpriteKit
 import GameplayKit
 import AVFoundation
 import GoogleMobileAds
+import GameKit
 
-class GameViewController: UIViewController, GADBannerViewDelegate {
+class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterControllerDelegate {
+    //Game Center Integration
+    var gcEnabled = Bool()
+    var gcDefaultLeaderBoard = String()
+    let LEADERBOARD_ID = "moneeb.sayed.MathNinja"
     
     //MARK:- Properties
+    var startPressed = 0
     var bgAudioPlayer : AVAudioPlayer?
     var audioPlayer : AVAudioPlayer?
     var firstNumber = arc4random_uniform(12) + 1
@@ -299,12 +305,13 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
     lazy var muteButton: UIButton = {
         let muteButton = UIButton(frame: .zero)
         muteButton.translatesAutoresizingMaskIntoConstraints = false
-        muteButton.backgroundColor = .clear
+        muteButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
+        muteButton.isHidden = true
         muteButton.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 22)
-        muteButton.setTitle("Pause", for: .normal)
+        muteButton.setTitle("Mute", for: .normal)
         muteButton.setTitleColor(.black, for: .normal)
         muteButton.setTitleColor(.white, for: .highlighted)
-        muteButton.addTarget(self, action: #selector(userDidPressPauseButton(_:)), for: .touchUpInside)
+        muteButton.addTarget(self, action: #selector(userDidPressMuteButton(_:)), for: .touchUpInside)
         return muteButton
     }()
     
@@ -319,19 +326,118 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
         startButton.addTarget(self, action: #selector(userDidPressStartButton(_:)), for: .touchUpInside)
         return startButton
     }()
+    
+    lazy var checkLeaderboardButton: UIButton = {
+        let checkLeaderboardButton = UIButton(frame: .zero)
+        checkLeaderboardButton.translatesAutoresizingMaskIntoConstraints = false
+        checkLeaderboardButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
+        checkLeaderboardButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 22)
+        checkLeaderboardButton.setTitle("Check Leaderboard", for: .normal)
+        checkLeaderboardButton.setTitleColor(.black, for: .normal)
+        checkLeaderboardButton.setTitleColor(.white, for: .highlighted)
+        checkLeaderboardButton.addTarget(self, action: #selector(userDidPressCKLeaderboardButton(_:)), for: .touchUpInside)
+        return checkLeaderboardButton
+    }()
     //Start Menu
+    //userDidPressCKLeaderboardButton
+    @objc func userDidPressCKLeaderboardButton(_ sender: UIButton) {
+        let gcVC = GKGameCenterViewController()
+        gcVC.gameCenterDelegate = self
+        gcVC.viewState = .leaderboards
+        gcVC.leaderboardIdentifier = LEADERBOARD_ID
+        present(gcVC, animated: true, completion: nil)
+    }
     //userDidPressStartButton
     @objc func userDidPressStartButton(_ sender: UIButton) {
+        let startDefaults = UserDefaults.standard
+        startDefaults.set(startPressed, forKey: "startPressed")
+        startDefaults.synchronize()
+        if startPressed == 1 {
+            let achievement = GKAchievement(identifier: "startAdv")
+            
+            achievement.percentComplete = Double(score / 5)
+            achievement.showsCompletionBanner = true  // use Game Center's UI
+            
+            GKAchievement.report([achievement], withCompletionHandler: nil)
+        } else if startPressed == 10 {
+            let achievement = GKAchievement(identifier: "beenNice")
+            
+            achievement.percentComplete = Double(score / 5)
+            achievement.showsCompletionBanner = true  // use Game Center's UI
+            
+            GKAchievement.report([achievement], withCompletionHandler: nil)
+        } else if startPressed == 20 {
+            let achievement = GKAchievement(identifier: "beenWhile")
+            
+            achievement.percentComplete = Double(score / 10)
+            achievement.showsCompletionBanner = true  // use Game Center's UI
+            
+            GKAchievement.report([achievement], withCompletionHandler: nil)
+        } else if startPressed == 50 {
+            let achievement = GKAchievement(identifier: "beenLong")
+            
+            achievement.percentComplete = Double(score / 10)
+            achievement.showsCompletionBanner = true  // use Game Center's UI
+            
+            GKAchievement.report([achievement], withCompletionHandler: nil)
+        } else if startPressed == 100 {
+            let achievement = GKAchievement(identifier: "superLong")
+            
+            achievement.percentComplete = Double(score / 20)
+            achievement.showsCompletionBanner = true  // use Game Center's UI
+            
+            GKAchievement.report([achievement], withCompletionHandler: nil)
+        }
         startButton.isHidden = true
         highscoreLabel.isHidden = true
         highscoreTextLabel.isHidden = true
+        checkLeaderboardButton.isHidden = true
+        startPressed = startPressed + 1
         showEverything()
     }
     //Pause Menu
+    
+    //userDidPressMuteButton
+    @objc func userDidPressMuteButton(_ sender: UIButton) {
+        if (muteCount % 2) == 0 {
+            muteButton.setTitle("Unmute", for: .normal)
+            bgAudioPlayer?.pause()
+            audioPlayer?.pause()
+            muteCount = muteCount + 1
+        } else {
+            muteButton.setTitle("Mute", for: .normal)
+            bgAudioPlayer?.prepareToPlay()
+            bgAudioPlayer?.play()
+            audioPlayer?.play()
+            muteCount = muteCount + 1
+        }
+    }
     //userDidPressNightButton
     @objc func userDidPressNightButton(_ sender: UIButton) {
+        let nightDefaults = UserDefaults.standard
+        nightDefaults.set(nightPressed, forKey: "nightPressed")
+        nightDefaults.synchronize()
         if (nightPressed % 2) == 0 {
-            nightButton.setTitle("🌙 Mode", for: .normal)
+            if nightPressed == 2 {
+                let achievement = GKAchievement(identifier: "darkness")
+                
+                achievement.percentComplete = Double(score / 5)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            } else if nightPressed == 50 {
+                let achievement = GKAchievement(identifier: "darknessMax")
+                
+                achievement.percentComplete = Double(score / 25)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            }
+            nightButton.setTitle("☀️ Mode", for: .normal)
+            checkLeaderboardButton.setTitleColor(.white, for: .normal)
+            checkLeaderboardButton.setTitleColor(.black, for: .highlighted)
+            muteButton.setTitleColor(.white, for: .normal)
+            muteButton.setTitleColor(.black, for: .highlighted)
             nightButton.setTitleColor(.white, for: .normal)
             nightButton.setTitleColor(.black, for: .highlighted)
             pauseButton.setTitleColor(.white, for: .normal)
@@ -385,8 +491,29 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
             fightButton.backgroundColor = .blue
             nightPressed = nightPressed + 1
         } else {
-            nightButton.setTitle("☀️ Mode", for: .normal)
+            nightButton.setTitle("🌙 Mode", for: .normal)
+            if nightPressed == 1 {
+                let achievement = GKAchievement(identifier: "darkness")
+                
+                achievement.percentComplete = Double(score / 5)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            } else if nightPressed == 49 {
+                let achievement = GKAchievement(identifier: "darknessMax")
+                
+                achievement.percentComplete = Double(score / 25)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            }
             view.backgroundColor = .white
+            checkLeaderboardButton.setTitleColor(.black, for: .normal)
+            checkLeaderboardButton.setTitleColor(.white, for: .highlighted)
+            muteButton.setTitleColor(.black, for: .normal)
+            muteButton.setTitleColor(.white, for: .highlighted)
+            nightButton.setTitleColor(.black, for: .normal)
+            nightButton.setTitleColor(.white, for: .highlighted)
             pauseButton.setTitleColor(.black, for: .normal)
             highscoreLabel.textColor = .black
             highscoreTextLabel.textColor = .black
@@ -443,7 +570,9 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
     @objc func userDidPressPauseButton(_ sender: UIButton) {
         if (pausePressed % 2) == 0 {
             gameScene.isPaused = true
+            checkLeaderboardButton.isHidden = false
             nightButton.isHidden = false
+            muteButton.isHidden = false
             pauseButton.setTitle("Resume", for: .normal)
             highscoreLabel.isHidden = false
             highscoreTextLabel.isHidden = false
@@ -459,6 +588,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
             pausePressed = pausePressed + 1
         } else {
             gameScene.isPaused = false
+            checkLeaderboardButton.isHidden = true
+            muteButton.isHidden = true
             nightButton.isHidden = true
             highscoreLabel.isHidden = true
             highscoreTextLabel.isHidden = true
@@ -489,7 +620,12 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
     
     @objc func userDidPressPlayAgainButton(_ sender: UIButton) {
         gameScene.playedAgain()
+        let startDefaults = UserDefaults.standard
+        startDefaults.set(startPressed, forKey: "startPressed")
+        startDefaults.synchronize()
+        startPressed = startPressed + 1
         highscoreLabel.isHidden = true
+        muteButton.isHidden = true
         highscoreTextLabel.isHidden = true
         scoreLabel.isHidden = false
         scoreTextLabel.isHidden = false
@@ -603,7 +739,27 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
             playCorrectSound()
             score = score + 1
             gameScene.correct(score: score)
+            let bestScoreInt = GKScore(leaderboardIdentifier: LEADERBOARD_ID)
+            bestScoreInt.value = Int64(score)
+            GKScore.report([bestScoreInt]) { (error) in
+                if error != nil {
+                    print(error!.localizedDescription)
+                } else {
+                    print("Best Score submitted to your Leaderboard!")
+                }
+            }
+            //Check for Score Achievements
+            
+            
             if score >= 25 && score < 50 {
+                if score == 25 {
+                    let achievement = GKAchievement(identifier: "10p")
+                    
+                    achievement.percentComplete = Double(score / 10)
+                    achievement.showsCompletionBanner = true  // use Game Center's UI
+                    
+                    GKAchievement.report([achievement], withCompletionHandler: nil)
+                }
                 firstNumber = arc4random_uniform(15) + 1
                 secondNumber = arc4random_uniform(5) + 1
                 while(firstNumber < secondNumber) {
@@ -615,6 +771,14 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
                 answerLabel.text = "0"
                 scoreLabel.text = score.description
             } else if (score >= 50 && score < 75) {
+                if score == 50 {
+                    let achievement = GKAchievement(identifier: "25p")
+                    
+                    achievement.percentComplete = Double(score / 25)
+                    achievement.showsCompletionBanner = true  // use Game Center's UI
+                    
+                    GKAchievement.report([achievement], withCompletionHandler: nil)
+                }
                 firstNumber = arc4random_uniform(19) + 1
                 secondNumber = arc4random_uniform(12) + 1
                 while(firstNumber < secondNumber) {
@@ -626,6 +790,14 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
                 answerLabel.text = "0"
                 scoreLabel.text = score.description
             } else if score >= 75 && score < 100 {
+                if score == 75 {
+                    let achievement = GKAchievement(identifier: "50p")
+                    
+                    achievement.percentComplete = Double(score / 30)
+                    achievement.showsCompletionBanner = true  // use Game Center's UI
+                    
+                    GKAchievement.report([achievement], withCompletionHandler: nil)
+                }
                 firstNumber = arc4random_uniform(25) + 1
                 secondNumber = arc4random_uniform(15) + 1
                 while(firstNumber < secondNumber) {
@@ -636,7 +808,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
                 numberTwoLabel.text = secondNumber.description
                 answerLabel.text = "0"
                 scoreLabel.text = score.description
-            } else if score > 100 {
+            } else if score >= 100 {
+                if score == 100 {
+                    let achievement = GKAchievement(identifier: "75p")
+                    
+                    achievement.percentComplete = Double(score / 60)
+                    achievement.showsCompletionBanner = true  // use Game Center's UI
+                    
+                    GKAchievement.report([achievement], withCompletionHandler: nil)
+                }
                 firstNumber = arc4random_uniform(25) + 1
                 secondNumber = arc4random_uniform(25) + 1
                 while(firstNumber < secondNumber) {
@@ -867,11 +1047,52 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
         print(error)
     }
     
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
+    }
+    
+    func authenticateLocalPlayer() {
+        let localPlayer: GKLocalPlayer = GKLocalPlayer.localPlayer()
+        
+        localPlayer.authenticateHandler = {(ViewController, error) -> Void in
+            if((ViewController) != nil) {
+                // 1. Show login if player is not logged in
+                self.present(ViewController!, animated: true, completion: nil)
+            } else if (localPlayer.isAuthenticated) {
+                // 2. Player is already authenticated & logged in, load game center
+                self.gcEnabled = true
+                
+                // Get the default leaderboard ID
+                localPlayer.loadDefaultLeaderboardIdentifier(completionHandler: { (leaderboardIdentifer, error) in
+                    if error != nil { print(error!)
+                    } else { self.gcDefaultLeaderBoard = leaderboardIdentifer! }
+                })
+                
+            } else {
+                // 3. Game center is not enabled on the users device
+                self.gcEnabled = false
+                print("Local player could not be authenticated!")
+                print(error!)
+            }
+        }
+    }
+    
     //MARK:- View Life-cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         adBannerView.load(GADRequest())
+        authenticateLocalPlayer()
+        
+        let nightDefaults = UserDefaults.standard
+        if nightDefaults.value(forKey: "nightPressed") != nil {
+            nightPressed = nightDefaults.value(forKey: "nightPressed") as! Int
+        }
+        
+        let startDefaults = UserDefaults.standard
+        if startDefaults.value(forKey: "startPressed") != nil {
+            startPressed = nightDefaults.value(forKey: "startPressed") as! Int
+        }
         
         let highscoreDefaults = UserDefaults.standard
         if highscoreDefaults.value(forKey: "highscore") != nil {
@@ -956,7 +1177,9 @@ class GameViewController: UIViewController, GADBannerViewDelegate {
         verticalButtonStackView.addArrangedSubview(answerLabel)
         playAgainButton.isHidden = true
         verticalButtonStackView.addArrangedSubview(playAgainButton)
+        verticalButtonStackView.addArrangedSubview(checkLeaderboardButton)
         verticalButtonStackView.addArrangedSubview(nightButton)
+        verticalButtonStackView.addArrangedSubview(muteButton)
         verticalButtonStackView.addArrangedSubview(firstButtonStackView)
         verticalButtonStackView.addArrangedSubview(secondButtonStackView)
         verticalButtonStackView.addArrangedSubview(thirdButtonStackView)
