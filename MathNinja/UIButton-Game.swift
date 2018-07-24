@@ -13,7 +13,7 @@ public extension UIButton {
         let gameButton = UIButton(frame: .zero)
         gameButton.translatesAutoresizingMaskIntoConstraints = false
         gameButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-        gameButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 30)
+        gameButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
         gameButton.titleLabel?.adjustsFontSizeToFitWidth = true
         //systemFont(ofSize: 30)
         gameButton.setTitle(text, for: .normal)
