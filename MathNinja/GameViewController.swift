@@ -402,7 +402,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         if (muteCount % 2) == 0 {
             muteButton.setTitle("Unmute", for: .normal)
             bgAudioPlayer?.pause()
-            audioPlayer?.pause()
+            audioPlayer?.stop()
             muteCount = muteCount + 1
         } else {
             muteButton.setTitle("Mute", for: .normal)
@@ -624,6 +624,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         startDefaults.set(startPressed, forKey: "startPressed")
         startDefaults.synchronize()
         startPressed = startPressed + 1
+        checkLeaderboardButton.isHidden = true
         highscoreLabel.isHidden = true
         muteButton.isHidden = true
         highscoreTextLabel.isHidden = true

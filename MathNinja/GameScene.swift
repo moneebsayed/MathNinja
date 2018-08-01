@@ -69,6 +69,7 @@ class GameScene: SKScene {
     }
     
     public func correct(score: Int) {
+        fireWeapon()
         tauntLabel.isHidden = false
         gameOverLabel.isHidden = true
         if score == 25 {
@@ -136,15 +137,25 @@ class GameScene: SKScene {
     public func playedAgain() {
         tauntLabel.isHidden = false
         gameOverLabel.isHidden = true
+        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
+        let moveToBackX: SKAction = SKAction.moveTo(x: -205.158, duration: 0.25)
+        let seq = SKAction.sequence([moveToBackX, fadeIn])
+        player.run(seq)
     }
     
     public func gameOver() {
         tauntLabel.isHidden = true
         gameOverLabel.isHidden = false
         gameOverLabel.run(SKAction(named: "Special")!)
+        enemy.run(SKAction(named: "Special")!)
+        let moveOutsideX: SKAction = SKAction.moveTo(x: -500, duration: 0.1)
+        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
+        let seq = SKAction.sequence([moveOutsideX, fadeOut])
+        player.run(seq)
     }
     
     public func incorrect(firstNumber: Int, secondNumber: Int) {
+        fireEnemyWeapon()
         tauntLabel.isHidden = false
         gameOverLabel.isHidden = true
         tauntLabel.text = solveEquation(firstNumber: firstNumber, secondNumber: secondNumber)
@@ -155,6 +166,50 @@ class GameScene: SKScene {
         tauntLabel.run(seq)
     }
     
+    func fireWeapon() {
+        weapon.isHidden = false
+        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
+        let moveToOtherSideX: SKAction = SKAction.moveTo(x: 261, duration: 0.5)
+        let moveToOtherSideY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.5)
+        let moveOutsideX: SKAction = SKAction.moveTo(x: 500, duration: 0.25)
+        //Hit Bad Guy
+        let rotateBadGuy: SKAction = SKAction.rotate(byAngle: 360, duration: 0.30)
+        let rotateBack: SKAction = SKAction.rotate(toAngle: 0, duration: 0.25, shortestUnitArc: false)
+        //let rotateBadGuyBack: SKAction = SKAction.rotate(toAngle: 369, duration: 1)
+        //Reload
+        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
+        let moveToBackX: SKAction = SKAction.moveTo(x: -147.9, duration: 0.25)
+        let moveToBackY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.25)
+        let seq = SKAction.sequence([fadeIn, moveOutsideX, moveToOtherSideY, fadeOut, moveToBackX, moveToBackY])
+        //let seq2 = SKAction.sequence([fadeOut, moveToBackX, moveToBackY])
+        let badSeq = SKAction.sequence([rotateBadGuy, rotateBack, moveToOtherSideX, moveToOtherSideY])
+        weapon.run(seq)
+        enemy.run(badSeq)
+        //weapon.run(seq2)
+    }
+    
+    func fireEnemyWeapon() {
+        enemyFire.isHidden = false
+        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
+        let moveToOtherSideY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.5)
+        let moveOutsideX: SKAction = SKAction.moveTo(x: -500, duration: 0.25)
+        //Hit Good Guy
+        let rotateGoodGuy: SKAction = SKAction.rotate(byAngle: 360, duration: 0.30)
+        let rotateBack: SKAction = SKAction.rotate(toAngle: 0, duration: 0.25, shortestUnitArc: false)
+        //let rotateBadGuyBack: SKAction = SKAction.rotate(toAngle: 369, duration: 1)
+        //Reload
+        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
+        let moveToBackX: SKAction = SKAction.moveTo(x: -205.158, duration: 0.25)
+        //175.906
+        let moveToWeapBackX: SKAction = SKAction.moveTo(x: 175.906, duration: 0.25)
+        //let moveToBackY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.25)
+        let seq = SKAction.sequence([fadeIn, moveOutsideX, fadeOut, moveToWeapBackX, moveToOtherSideY])
+        //let seq2 = SKAction.sequence([fadeOut, moveToBackX, moveToBackY])
+        let goodSeq = SKAction.sequence([rotateGoodGuy, rotateBack, moveToBackX, moveToOtherSideY])
+        enemyFire.run(seq)
+        player.run(goodSeq)
+        //weapon.run(seq2)
+    }
     func solveEquation(firstNumber: Int, secondNumber: Int) -> String {
         return "\(firstNumber) x \(secondNumber) = \(firstNumber * secondNumber)"
     }
