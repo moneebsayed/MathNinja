@@ -36,5 +36,7 @@
 	<string>1:839210771349:ios:fa044e7f1d351ff3</string>
 	<key>DATABASE_URL</key>
 	<string>https://mathninja-119e0.firebaseio.com</string>
+	<key>ADMOB_APP_ID</key>
+	<string>ca-app-pub-6279961815562254~7237991305</string>
 </dict>
 </plist>

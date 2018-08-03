@@ -66,9 +66,22 @@ class GameScene: SKScene {
         } else {
             print("failed!")
         }
+        if let someSky: SKSpriteNode = self.childNode(withName: "Sky") as? SKSpriteNode {
+            daySky = someSky
+            daySky.physicsBody?.isDynamic = false
+        } else {
+            print("failed!")
+        }
+        if let someNightSky: SKSpriteNode = self.childNode(withName: "Night") as? SKSpriteNode {
+            nightSky = someNightSky
+            nightSky.physicsBody?.isDynamic = false
+        } else {
+            print("failed!")
+        }
     }
     
-    public func correct(score: Int) {
+    public func correct(score: Int, nightCount: Int) {
+        skyCheck(nightCount: nightCount)
         fireWeapon()
         tauntLabel.isHidden = false
         gameOverLabel.isHidden = true
@@ -80,7 +93,7 @@ class GameScene: SKScene {
             tauntLabel.run(SKAction.fadeIn(withDuration: 2.0))
         } else if score > 25 && score < 50 {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            tauntLabel.fontColor = .blue
+            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
@@ -93,7 +106,7 @@ class GameScene: SKScene {
             tauntLabel.run(SKAction.fadeIn(withDuration: 2.0))
         } else if score > 50 && score < 75 {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            tauntLabel.fontColor = .blue
+            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
@@ -106,7 +119,7 @@ class GameScene: SKScene {
             tauntLabel.run(SKAction.fadeIn(withDuration: 2.0))
         } else if score > 75 && score < 100 {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            tauntLabel.fontColor = .blue
+            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
@@ -119,14 +132,14 @@ class GameScene: SKScene {
             tauntLabel.run(SKAction.fadeIn(withDuration: 2.0))
         } else if score > 100 {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            tauntLabel.fontColor = .blue
+            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
             tauntLabel.run(seq)
         } else {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            tauntLabel.fontColor = .blue
+            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
@@ -209,6 +222,17 @@ class GameScene: SKScene {
         enemyFire.run(seq)
         player.run(goodSeq)
         //weapon.run(seq2)
+    }
+    public func skyCheck(nightCount: Int) {
+        if (nightCount % 2) == 0 {
+            tauntLabel.fontColor = #colorLiteral(red: 0.7490196078, green: 0.3529411765, blue: 0.9490196078, alpha: 1)
+            daySky.run(SKAction.hide())
+            nightSky.run(SKAction.unhide())
+        } else {
+            tauntLabel.fontColor = .blue
+            nightSky.run(SKAction.hide())
+            daySky.run(SKAction.unhide())
+        }
     }
     func solveEquation(firstNumber: Int, secondNumber: Int) -> String {
         return "\(firstNumber) x \(secondNumber) = \(firstNumber * secondNumber)"

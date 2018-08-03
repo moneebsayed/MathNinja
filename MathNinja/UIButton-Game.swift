@@ -12,7 +12,7 @@ public extension UIButton {
     public static func gameButtonWithText(text: String) -> UIButton {
         let gameButton = UIButton(frame: .zero)
         gameButton.translatesAutoresizingMaskIntoConstraints = false
-        gameButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
+        gameButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
         gameButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
         gameButton.titleLabel?.adjustsFontSizeToFitWidth = true
         //systemFont(ofSize: 30)

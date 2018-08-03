@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00445AC5BB10EFDD5A413C04 /* Pods_Multiply_Ninja.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AD45ADC2F1F7EACA4555DE5 /* Pods_Multiply_Ninja.framework */; };
 		A932CDD32070301700028548 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = A932CDD22070301700028548 /* GameScene.sks */; };
 		A932CDD52070301700028548 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = A932CDD42070301700028548 /* Actions.sks */; };
 		A932CDDE2070301700028548 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A932CDDD2070301700028548 /* Assets.xcassets */; };
 		A932CDE12070301700028548 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A932CDDF2070301700028548 /* LaunchScreen.storyboard */; };
 		A9A88ED32071ADB70044CDE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A88ED22071ADB60044CDE1 /* AppDelegate.swift */; };
-		A9C64C0320D787F80094B882 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9C64C0220D787F80094B882 /* GoogleService-Info.plist */; };
+		A9E70FE52112E74100B2DE86 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */; };
 		A9F009DE20FD49DF009FA561 /* UIButton-Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F009DA20FD49DF009FA561 /* UIButton-Game.swift */; };
 		A9F009DF20FD49DF009FA561 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F009DB20FD49DF009FA561 /* GameScene.swift */; };
 		A9F009E020FD49DF009FA561 /* UIStackView-Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F009DC20FD49DF009FA561 /* UIStackView-Game.swift */; };
@@ -21,12 +22,13 @@
 		A9F314992106B3890073F219 /* bgaudio.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A9F314982106B3890073F219 /* bgaudio.mp3 */; };
 		A9F3149B2106B3970073F219 /* correct.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A9F3149A2106B3970073F219 /* correct.mp3 */; };
 		A9F3149D2106B3B00073F219 /* incorrect.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A9F3149C2106B3B00073F219 /* incorrect.mp3 */; };
-		F1D18FBE176D6E0B0A30235C /* Pods_MathNinja.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0273CC73F357AADB76869FC1 /* Pods_MathNinja.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0273CC73F357AADB76869FC1 /* Pods_MathNinja.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MathNinja.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		0433A61B404A84E395892FD8 /* Pods-MathNinja.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MathNinja.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MathNinja/Pods-MathNinja.debug.xcconfig"; sourceTree = "<group>"; };
+		150543CE5BF9C412A29CFE8C /* Pods-Multiply Ninja.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Multiply Ninja.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Multiply Ninja/Pods-Multiply Ninja.debug.xcconfig"; sourceTree = "<group>"; };
+		3AD45ADC2F1F7EACA4555DE5 /* Pods_Multiply_Ninja.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Multiply_Ninja.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		656B6EDD5DFC41F205421DB2 /* Pods-Multiply Ninja.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Multiply Ninja.release.xcconfig"; path = "Pods/Target Support Files/Pods-Multiply Ninja/Pods-Multiply Ninja.release.xcconfig"; sourceTree = "<group>"; };
 		A932CDCD2070301700028548 /* Multiply Ninja.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Multiply Ninja.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A932CDD22070301700028548 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		A932CDD42070301700028548 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -34,7 +36,7 @@
 		A932CDE02070301700028548 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A932CDE22070301700028548 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A9A88ED22071ADB60044CDE1 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../../../.Trash/AppDelegate.swift; sourceTree = "<group>"; };
-		A9C64C0220D787F80094B882 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A9F009DA20FD49DF009FA561 /* UIButton-Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton-Game.swift"; sourceTree = "<group>"; };
 		A9F009DB20FD49DF009FA561 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		A9F009DC20FD49DF009FA561 /* UIStackView-Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStackView-Game.swift"; sourceTree = "<group>"; };
@@ -43,7 +45,6 @@
 		A9F314982106B3890073F219 /* bgaudio.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bgaudio.mp3; sourceTree = "<group>"; };
 		A9F3149A2106B3970073F219 /* correct.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = correct.mp3; sourceTree = "<group>"; };
 		A9F3149C2106B3B00073F219 /* incorrect.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = incorrect.mp3; sourceTree = "<group>"; };
-		B97BB90C752E7049D9DB25F1 /* Pods-MathNinja.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MathNinja.release.xcconfig"; path = "Pods/Target Support Files/Pods-MathNinja/Pods-MathNinja.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,8 +52,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1D18FBE176D6E0B0A30235C /* Pods_MathNinja.framework in Frameworks */,
 				A9F314912106A63F0073F219 /* GameKit.framework in Frameworks */,
+				00445AC5BB10EFDD5A413C04 /* Pods_Multiply_Ninja.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +65,7 @@
 			children = (
 				A9F314902106A63F0073F219 /* GameKit.framework */,
 				0273CC73F357AADB76869FC1 /* Pods_MathNinja.framework */,
+				3AD45ADC2F1F7EACA4555DE5 /* Pods_Multiply_Ninja.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -71,8 +73,8 @@
 		1D9CCF2725B9A3734818F3E2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0433A61B404A84E395892FD8 /* Pods-MathNinja.debug.xcconfig */,
-				B97BB90C752E7049D9DB25F1 /* Pods-MathNinja.release.xcconfig */,
+				150543CE5BF9C412A29CFE8C /* Pods-Multiply Ninja.debug.xcconfig */,
+				656B6EDD5DFC41F205421DB2 /* Pods-Multiply Ninja.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -98,7 +100,7 @@
 		A932CDCF2070301700028548 /* MathNinja */ = {
 			isa = PBXGroup;
 			children = (
-				A9C64C0220D787F80094B882 /* GoogleService-Info.plist */,
+				A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */,
 				A9A88ED22071ADB60044CDE1 /* AppDelegate.swift */,
 				A9F009DB20FD49DF009FA561 /* GameScene.swift */,
 				A9F009DD20FD49DF009FA561 /* GameViewController.swift */,
@@ -185,8 +187,8 @@
 			files = (
 				A932CDD32070301700028548 /* GameScene.sks in Resources */,
 				A932CDDE2070301700028548 /* Assets.xcassets in Resources */,
+				A9E70FE52112E74100B2DE86 /* GoogleService-Info.plist in Resources */,
 				A9F314992106B3890073F219 /* bgaudio.mp3 in Resources */,
-				A9C64C0320D787F80094B882 /* GoogleService-Info.plist in Resources */,
 				A9F3149D2106B3B00073F219 /* incorrect.mp3 in Resources */,
 				A932CDE12070301700028548 /* LaunchScreen.storyboard in Resources */,
 				A9F3149B2106B3970073F219 /* correct.mp3 in Resources */,
@@ -203,7 +205,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-MathNinja/Pods-MathNinja-frameworks.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-Multiply Ninja/Pods-Multiply Ninja-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -214,7 +216,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MathNinja/Pods-MathNinja-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Multiply Ninja/Pods-Multiply Ninja-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BB2255F0CD7DF255F714D943 /* [CP] Check Pods Manifest.lock */ = {
@@ -228,7 +230,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MathNinja-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Multiply Ninja-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -377,7 +379,7 @@
 		};
 		A932CDE62070301700028548 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0433A61B404A84E395892FD8 /* Pods-MathNinja.debug.xcconfig */;
+			baseConfigurationReference = 150543CE5BF9C412A29CFE8C /* Pods-Multiply Ninja.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -395,7 +397,7 @@
 		};
 		A932CDE72070301700028548 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B97BB90C752E7049D9DB25F1 /* Pods-MathNinja.release.xcconfig */;
+			baseConfigurationReference = 656B6EDD5DFC41F205421DB2 /* Pods-Multiply Ninja.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

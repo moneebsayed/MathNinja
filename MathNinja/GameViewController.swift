@@ -29,8 +29,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     var score = 0
     var highscore = 0
     var pausePressed = 0
-    var nightPressed = 0
-    var muteCount = 0
+    var nightPressed = 1
+    var muteCount = 1
     let happyArray = ["Great Job!","Keep it Up!", "Nice!", "Take That!", "WOOHOO!", "Math Punch!", "Bam!", "Pow!"]
     
     //Ad Banner
@@ -292,7 +292,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var nightButton: UIButton = {
         let nightButton = UIButton(frame: .zero)
         nightButton.translatesAutoresizingMaskIntoConstraints = false
-        nightButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
+        nightButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
         nightButton.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 22)
         nightButton.setTitle("🌙 Mode", for: .normal)
         nightButton.isHidden = true
@@ -305,7 +305,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var muteButton: UIButton = {
         let muteButton = UIButton(frame: .zero)
         muteButton.translatesAutoresizingMaskIntoConstraints = false
-        muteButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
+        muteButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
         muteButton.isHidden = true
         muteButton.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 22)
         muteButton.setTitle("Mute", for: .normal)
@@ -318,7 +318,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var startButton: UIButton = {
         let startButton = UIButton(frame: .zero)
         startButton.translatesAutoresizingMaskIntoConstraints = false
-        startButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
+        startButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
         startButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 22)
         startButton.setTitle("Let's Play", for: .normal)
         startButton.setTitleColor(.black, for: .normal)
@@ -330,7 +330,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var checkLeaderboardButton: UIButton = {
         let checkLeaderboardButton = UIButton(frame: .zero)
         checkLeaderboardButton.translatesAutoresizingMaskIntoConstraints = false
-        checkLeaderboardButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
+        checkLeaderboardButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
         checkLeaderboardButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 22)
         checkLeaderboardButton.setTitle("Check Leaderboard", for: .normal)
         checkLeaderboardButton.setTitleColor(.black, for: .normal)
@@ -352,6 +352,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         let startDefaults = UserDefaults.standard
         startDefaults.set(startPressed, forKey: "startPressed")
         startDefaults.synchronize()
+        gameScene.skyCheck(nightCount: nightPressed)
         if startPressed == 1 {
             let achievement = GKAchievement(identifier: "startAdv")
             
@@ -399,171 +400,19 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     //userDidPressMuteButton
     @objc func userDidPressMuteButton(_ sender: UIButton) {
-        if (muteCount % 2) == 0 {
-            muteButton.setTitle("Unmute", for: .normal)
-            bgAudioPlayer?.pause()
-            audioPlayer?.stop()
-            muteCount = muteCount + 1
-        } else {
-            muteButton.setTitle("Mute", for: .normal)
-            bgAudioPlayer?.prepareToPlay()
-            bgAudioPlayer?.play()
-            audioPlayer?.play()
-            muteCount = muteCount + 1
-        }
+        muteCount = muteCount + 1
+        let muteDefaults = UserDefaults.standard
+        muteDefaults.set(muteCount, forKey: "mutePressed")
+        muteDefaults.synchronize()
+        muteHandle()
     }
     //userDidPressNightButton
     @objc func userDidPressNightButton(_ sender: UIButton) {
+        nightPressed = nightPressed + 1
         let nightDefaults = UserDefaults.standard
         nightDefaults.set(nightPressed, forKey: "nightPressed")
         nightDefaults.synchronize()
-        if (nightPressed % 2) == 0 {
-            if nightPressed == 2 {
-                let achievement = GKAchievement(identifier: "darkness")
-                
-                achievement.percentComplete = Double(score / 5)
-                achievement.showsCompletionBanner = true  // use Game Center's UI
-                
-                GKAchievement.report([achievement], withCompletionHandler: nil)
-            } else if nightPressed == 50 {
-                let achievement = GKAchievement(identifier: "darknessMax")
-                
-                achievement.percentComplete = Double(score / 25)
-                achievement.showsCompletionBanner = true  // use Game Center's UI
-                
-                GKAchievement.report([achievement], withCompletionHandler: nil)
-            }
-            nightButton.setTitle("☀️ Mode", for: .normal)
-            checkLeaderboardButton.setTitleColor(.white, for: .normal)
-            checkLeaderboardButton.setTitleColor(.black, for: .highlighted)
-            muteButton.setTitleColor(.white, for: .normal)
-            muteButton.setTitleColor(.black, for: .highlighted)
-            nightButton.setTitleColor(.white, for: .normal)
-            nightButton.setTitleColor(.black, for: .highlighted)
-            pauseButton.setTitleColor(.white, for: .normal)
-            view.backgroundColor = .black
-            highscoreLabel.textColor = .white
-            highscoreTextLabel.textColor = .white
-            scoreLabel.textColor = .white
-            scoreTextLabel.textColor = .white
-            livesLabel.textColor = .white
-            playAgainButton.setTitleColor(.white, for: .normal)
-            numberOneLabel.textColor = .white
-            numberTwoLabel.textColor = .white
-            multiplyLabel.textColor = .white
-            oneButton.setTitleColor(.white, for: .normal)
-            twoButton.setTitleColor(.white, for: .normal)
-            threeButton.setTitleColor(.white, for: .normal)
-            fourButton.setTitleColor(.white, for: .normal)
-            fiveButton.setTitleColor(.white, for: .normal)
-            sixButton.setTitleColor(.white, for: .normal)
-            sevenButton.setTitleColor(.white, for: .normal)
-            eightButton.setTitleColor(.white, for: .normal)
-            nineButton.setTitleColor(.white, for: .normal)
-            zeroButton.setTitleColor(.white, for: .normal)
-            clearButton.setTitleColor(.white, for: .normal)
-            fightButton.setTitleColor(.white, for: .normal)
-            answerLabel.backgroundColor = .orange
-            answerLabel.textColor = .white
-            oneButton.setTitleColor(.black, for: .highlighted)
-            twoButton.setTitleColor(.black, for: .highlighted)
-            threeButton.setTitleColor(.black, for: .highlighted)
-            fourButton.setTitleColor(.black, for: .highlighted)
-            fiveButton.setTitleColor(.black, for: .highlighted)
-            sixButton.setTitleColor(.black, for: .highlighted)
-            sevenButton.setTitleColor(.black, for: .highlighted)
-            eightButton.setTitleColor(.black, for: .highlighted)
-            nineButton.setTitleColor(.black, for: .highlighted)
-            zeroButton.setTitleColor(.black, for: .highlighted)
-            clearButton.setTitleColor(.black, for: .highlighted)
-            fightButton.setTitleColor(.black, for: .highlighted)
-            oneButton.backgroundColor = .blue
-            twoButton.backgroundColor = .blue
-            threeButton.backgroundColor = .blue
-            fourButton.backgroundColor = .blue
-            fiveButton.backgroundColor = .blue
-            sixButton.backgroundColor = .blue
-            sevenButton.backgroundColor = .blue
-            eightButton.backgroundColor = .blue
-            nineButton.backgroundColor = .blue
-            zeroButton.backgroundColor = .blue
-            clearButton.backgroundColor = .blue
-            fightButton.backgroundColor = .blue
-            nightPressed = nightPressed + 1
-        } else {
-            nightButton.setTitle("🌙 Mode", for: .normal)
-            if nightPressed == 1 {
-                let achievement = GKAchievement(identifier: "darkness")
-                
-                achievement.percentComplete = Double(score / 5)
-                achievement.showsCompletionBanner = true  // use Game Center's UI
-                
-                GKAchievement.report([achievement], withCompletionHandler: nil)
-            } else if nightPressed == 49 {
-                let achievement = GKAchievement(identifier: "darknessMax")
-                
-                achievement.percentComplete = Double(score / 25)
-                achievement.showsCompletionBanner = true  // use Game Center's UI
-                
-                GKAchievement.report([achievement], withCompletionHandler: nil)
-            }
-            view.backgroundColor = .white
-            checkLeaderboardButton.setTitleColor(.black, for: .normal)
-            checkLeaderboardButton.setTitleColor(.white, for: .highlighted)
-            muteButton.setTitleColor(.black, for: .normal)
-            muteButton.setTitleColor(.white, for: .highlighted)
-            nightButton.setTitleColor(.black, for: .normal)
-            nightButton.setTitleColor(.white, for: .highlighted)
-            pauseButton.setTitleColor(.black, for: .normal)
-            highscoreLabel.textColor = .black
-            highscoreTextLabel.textColor = .black
-            scoreLabel.textColor = .black
-            scoreTextLabel.textColor = .black
-            livesLabel.textColor = .black
-            playAgainButton.setTitleColor(.black, for: .normal)
-            numberOneLabel.textColor = .black
-            numberTwoLabel.textColor = .black
-            multiplyLabel.textColor = .black
-            oneButton.setTitleColor(.black, for: .normal)
-            twoButton.setTitleColor(.black, for: .normal)
-            threeButton.setTitleColor(.black, for: .normal)
-            fourButton.setTitleColor(.black, for: .normal)
-            fiveButton.setTitleColor(.black, for: .normal)
-            sixButton.setTitleColor(.black, for: .normal)
-            sevenButton.setTitleColor(.black, for: .normal)
-            eightButton.setTitleColor(.black, for: .normal)
-            nineButton.setTitleColor(.black, for: .normal)
-            zeroButton.setTitleColor(.black, for: .normal)
-            clearButton.setTitleColor(.black, for: .normal)
-            fightButton.setTitleColor(.black, for: .normal)
-            answerLabel.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
-            answerLabel.textColor = .black
-            oneButton.setTitleColor(.white, for: .highlighted)
-            twoButton.setTitleColor(.white, for: .highlighted)
-            threeButton.setTitleColor(.white, for: .highlighted)
-            fourButton.setTitleColor(.white, for: .highlighted)
-            fiveButton.setTitleColor(.white, for: .highlighted)
-            sixButton.setTitleColor(.white, for: .highlighted)
-            sevenButton.setTitleColor(.white, for: .highlighted)
-            eightButton.setTitleColor(.white, for: .highlighted)
-            nineButton.setTitleColor(.white, for: .highlighted)
-            zeroButton.setTitleColor(.white, for: .highlighted)
-            clearButton.setTitleColor(.white, for: .highlighted)
-            fightButton.setTitleColor(.white, for: .highlighted)
-            oneButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            twoButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            threeButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            fourButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            fiveButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            sixButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            sevenButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            eightButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            nineButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            zeroButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            clearButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            fightButton.backgroundColor = #colorLiteral(red: 0.004916466353, green: 0.9297073287, blue: 0.9222952659, alpha: 1)
-            nightPressed = nightPressed + 1
-        }
+        nightHandle()
     }
     
     //userDidPressPauseButton
@@ -585,7 +434,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             playAgainButton.isHidden = false
             playAgainButton.setTitle("Restart", for: .normal)
             answerLabel.isHidden = true;
-            pausePressed = pausePressed + 1
         } else {
             gameScene.isPaused = false
             checkLeaderboardButton.isHidden = true
@@ -613,8 +461,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             playAgainButton.isHidden = true
             playAgainButton.setTitle("Play Again?", for: .normal)
             answerLabel.isHidden = false;
-            pausePressed = pausePressed + 1
         }
+        pausePressed = pausePressed + 1
     }
     //MARK: Target Action
     
@@ -657,7 +505,11 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         playAgainButton.isHidden = true
         pauseButton.isHidden = false
         firstNumber = arc4random_uniform(12) + 1
-        secondNumber = arc4random_uniform(12) + 1
+        secondNumber = arc4random_uniform(3) + 1
+        while(firstNumber < secondNumber) {
+            firstNumber = arc4random_uniform(12) + 1
+            secondNumber = arc4random_uniform(3) + 1
+        }
         numberOneLabel.text = firstNumber.description
         numberTwoLabel.text = secondNumber.description
         answerLabel.text = "0"
@@ -739,7 +591,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         } else {
             playCorrectSound()
             score = score + 1
-            gameScene.correct(score: score)
+            gameScene.correct(score: score, nightCount: nightPressed)
             let bestScoreInt = GKScore(leaderboardIdentifier: LEADERBOARD_ID)
             bestScoreInt.value = Int64(score)
             GKScore.report([bestScoreInt]) { (error) in
@@ -884,7 +736,172 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     }
     
     //MARK: Helper Methods
+    func nightHandle() {
+        gameScene.skyCheck(nightCount: nightPressed)
+        if (nightPressed % 2) == 0 {
+            if nightPressed == 2 {
+                let achievement = GKAchievement(identifier: "darkness")
+                
+                achievement.percentComplete = Double(score / 5)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            } else if nightPressed == 50 {
+                let achievement = GKAchievement(identifier: "darknessMax")
+                
+                achievement.percentComplete = Double(score / 25)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            }
+            nightButton.setTitle("☀️ Mode", for: .normal)
+            checkLeaderboardButton.setTitleColor(.white, for: .normal)
+            checkLeaderboardButton.setTitleColor(.black, for: .highlighted)
+            startButton.setTitleColor(.white, for: .normal)
+            startButton.setTitleColor(.black, for: .highlighted)
+            muteButton.setTitleColor(.white, for: .normal)
+            muteButton.setTitleColor(.black, for: .highlighted)
+            nightButton.setTitleColor(.white, for: .normal)
+            nightButton.setTitleColor(.black, for: .highlighted)
+            pauseButton.setTitleColor(.white, for: .normal)
+            view.backgroundColor = .black
+            highscoreLabel.textColor = .white
+            highscoreTextLabel.textColor = .white
+            scoreLabel.textColor = .white
+            scoreTextLabel.textColor = .white
+            livesLabel.textColor = .white
+            playAgainButton.setTitleColor(.white, for: .normal)
+            numberOneLabel.textColor = .white
+            numberTwoLabel.textColor = .white
+            multiplyLabel.textColor = .white
+            oneButton.setTitleColor(.white, for: .normal)
+            twoButton.setTitleColor(.white, for: .normal)
+            threeButton.setTitleColor(.white, for: .normal)
+            fourButton.setTitleColor(.white, for: .normal)
+            fiveButton.setTitleColor(.white, for: .normal)
+            sixButton.setTitleColor(.white, for: .normal)
+            sevenButton.setTitleColor(.white, for: .normal)
+            eightButton.setTitleColor(.white, for: .normal)
+            nineButton.setTitleColor(.white, for: .normal)
+            zeroButton.setTitleColor(.white, for: .normal)
+            clearButton.setTitleColor(.white, for: .normal)
+            fightButton.setTitleColor(.white, for: .normal)
+            answerLabel.backgroundColor = .orange
+            answerLabel.textColor = .white
+            oneButton.setTitleColor(.black, for: .highlighted)
+            twoButton.setTitleColor(.black, for: .highlighted)
+            threeButton.setTitleColor(.black, for: .highlighted)
+            fourButton.setTitleColor(.black, for: .highlighted)
+            fiveButton.setTitleColor(.black, for: .highlighted)
+            sixButton.setTitleColor(.black, for: .highlighted)
+            sevenButton.setTitleColor(.black, for: .highlighted)
+            eightButton.setTitleColor(.black, for: .highlighted)
+            nineButton.setTitleColor(.black, for: .highlighted)
+            zeroButton.setTitleColor(.black, for: .highlighted)
+            clearButton.setTitleColor(.black, for: .highlighted)
+            fightButton.setTitleColor(.black, for: .highlighted)
+            oneButton.backgroundColor = .blue
+            twoButton.backgroundColor = .blue
+            threeButton.backgroundColor = .blue
+            fourButton.backgroundColor = .blue
+            fiveButton.backgroundColor = .blue
+            sixButton.backgroundColor = .blue
+            sevenButton.backgroundColor = .blue
+            eightButton.backgroundColor = .blue
+            nineButton.backgroundColor = .blue
+            zeroButton.backgroundColor = .blue
+            clearButton.backgroundColor = .blue
+            fightButton.backgroundColor = .blue
+        } else {
+            nightButton.setTitle("🌙 Mode", for: .normal)
+            if nightPressed == 1 {
+                let achievement = GKAchievement(identifier: "darkness")
+                
+                achievement.percentComplete = Double(score / 5)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            } else if nightPressed == 49 {
+                let achievement = GKAchievement(identifier: "darknessMax")
+                
+                achievement.percentComplete = Double(score / 25)
+                achievement.showsCompletionBanner = true  // use Game Center's UI
+                
+                GKAchievement.report([achievement], withCompletionHandler: nil)
+            }
+            view.backgroundColor = .white
+            checkLeaderboardButton.setTitleColor(.black, for: .normal)
+            checkLeaderboardButton.setTitleColor(.white, for: .highlighted)
+            startButton.setTitleColor(.black, for: .normal)
+            startButton.setTitleColor(.white, for: .highlighted)
+            muteButton.setTitleColor(.black, for: .normal)
+            muteButton.setTitleColor(.white, for: .highlighted)
+            nightButton.setTitleColor(.black, for: .normal)
+            nightButton.setTitleColor(.white, for: .highlighted)
+            pauseButton.setTitleColor(.black, for: .normal)
+            highscoreLabel.textColor = .black
+            highscoreTextLabel.textColor = .black
+            scoreLabel.textColor = .black
+            scoreTextLabel.textColor = .black
+            livesLabel.textColor = .black
+            playAgainButton.setTitleColor(.black, for: .normal)
+            numberOneLabel.textColor = .black
+            numberTwoLabel.textColor = .black
+            multiplyLabel.textColor = .black
+            oneButton.setTitleColor(.black, for: .normal)
+            twoButton.setTitleColor(.black, for: .normal)
+            threeButton.setTitleColor(.black, for: .normal)
+            fourButton.setTitleColor(.black, for: .normal)
+            fiveButton.setTitleColor(.black, for: .normal)
+            sixButton.setTitleColor(.black, for: .normal)
+            sevenButton.setTitleColor(.black, for: .normal)
+            eightButton.setTitleColor(.black, for: .normal)
+            nineButton.setTitleColor(.black, for: .normal)
+            zeroButton.setTitleColor(.black, for: .normal)
+            clearButton.setTitleColor(.black, for: .normal)
+            fightButton.setTitleColor(.black, for: .normal)
+            answerLabel.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
+            answerLabel.textColor = .black
+            oneButton.setTitleColor(.white, for: .highlighted)
+            twoButton.setTitleColor(.white, for: .highlighted)
+            threeButton.setTitleColor(.white, for: .highlighted)
+            fourButton.setTitleColor(.white, for: .highlighted)
+            fiveButton.setTitleColor(.white, for: .highlighted)
+            sixButton.setTitleColor(.white, for: .highlighted)
+            sevenButton.setTitleColor(.white, for: .highlighted)
+            eightButton.setTitleColor(.white, for: .highlighted)
+            nineButton.setTitleColor(.white, for: .highlighted)
+            zeroButton.setTitleColor(.white, for: .highlighted)
+            clearButton.setTitleColor(.white, for: .highlighted)
+            fightButton.setTitleColor(.white, for: .highlighted)
+            oneButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            twoButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            threeButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            fourButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            fiveButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            sixButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            sevenButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            eightButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            nineButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            zeroButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            clearButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            fightButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+        }
+    }
     
+    func muteHandle() {
+        if (muteCount % 2) == 0 {
+            muteButton.setTitle("Unmute", for: .normal)
+            bgAudioPlayer?.pause()
+            audioPlayer?.stop()
+        } else {
+            muteButton.setTitle("Mute", for: .normal)
+            bgAudioPlayer?.prepareToPlay()
+            bgAudioPlayer?.play()
+            audioPlayer?.play()
+            playBackSound()
+        }
+    }
     func appendValueToAnswerLabel(value: Int) {
         guard let text = answerLabel.text, let number = Int("\(text)\(value)") else {
             print("An error occurred while updating the answerLabel.")
@@ -1085,14 +1102,25 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         adBannerView.load(GADRequest())
         authenticateLocalPlayer()
         
+        let muteDefaults = UserDefaults.standard
+        if muteDefaults.value(forKey: "mutePressed") != nil {
+            muteCount = muteDefaults.value(forKey: "mutePressed") as! Int
+            muteHandle()
+        } else {
+            muteHandle()
+        }
         let nightDefaults = UserDefaults.standard
         if nightDefaults.value(forKey: "nightPressed") != nil {
             nightPressed = nightDefaults.value(forKey: "nightPressed") as! Int
+            gameScene.skyCheck(nightCount: nightPressed)
+            nightHandle()
+        } else {
+            gameScene.skyCheck(nightCount: nightPressed)
+            nightHandle()
         }
-        
         let startDefaults = UserDefaults.standard
         if startDefaults.value(forKey: "startPressed") != nil {
-            startPressed = nightDefaults.value(forKey: "startPressed") as! Int
+            startPressed = startDefaults.value(forKey: "startPressed") as! Int
         }
         
         let highscoreDefaults = UserDefaults.standard
@@ -1100,7 +1128,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             highscore = highscoreDefaults.value(forKey: "highscore") as! Int
             highscoreLabel.text = "\(highscore)"
         }
-        playBackSound()
         hideEverything()
         startButton.isHidden = false
         // Layout.
