@@ -17,8 +17,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     //Game Center Integration
     var gcEnabled = Bool()
     var gcDefaultLeaderBoard = String()
-    let LEADERBOARD_ID = "moneeb.sayed.MathNinja"
-    
+    let LEADERBOARD_ID = "com.score.multiplyninja"
     //MARK:- Properties
     var startPressed = 0
     var bgAudioPlayer : AVAudioPlayer?
@@ -32,8 +31,10 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     var nightPressed = 1
     var muteCount = 1
     let happyArray = ["Great Job!","Keep it Up!", "Nice!", "Take That!", "WOOHOO!", "Math Punch!", "Bam!", "Pow!"]
+    var previousAnswer = 0
+    /// The interstitial ad
+    var interstitial: GADInterstitial!
     
-    //Ad Banner
     lazy var adBannerView: GADBannerView = {
         let adBannerView = GADBannerView(adSize: kGADAdSizeSmartBannerPortrait)
         //Real
@@ -84,7 +85,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var multiplyLabel: UILabel = {
         let multiplyLabel = UILabel(frame: .zero)
         multiplyLabel.translatesAutoresizingMaskIntoConstraints = false
-        multiplyLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 34)
+        multiplyLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
         
         multiplyLabel.textColor = .black
         multiplyLabel.text = "x"
@@ -95,7 +96,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var numberOneLabel: UILabel = {
         let numberOneLabel = UILabel(frame: .zero)
         numberOneLabel.translatesAutoresizingMaskIntoConstraints = false
-        numberOneLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 35)
+        numberOneLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
         numberOneLabel.textColor = .black
         numberOneLabel.textAlignment = .right
         numberOneLabel.text = "\(firstNumber)"
@@ -106,7 +107,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var numberTwoLabel: UILabel = {
         let numberTwoLabel = UILabel(frame: .zero)
         numberTwoLabel.translatesAutoresizingMaskIntoConstraints = false
-        numberTwoLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 35)
+        numberTwoLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
         numberTwoLabel.textColor = .black
         numberTwoLabel.textAlignment = .right
         while (firstNumber < secondNumber) {
@@ -121,7 +122,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var answerLabel: UILabel = {
         let answerLabel = UILabel(frame: .zero)
         answerLabel.translatesAutoresizingMaskIntoConstraints = false
-        answerLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 35)
+        answerLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
         answerLabel.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
         answerLabel.textAlignment = .center
         answerLabel.textColor = .black
@@ -153,7 +154,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var highscoreTextLabel: UILabel = {
         let highscoreTextLabel = UILabel(frame: .zero)
         highscoreTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        highscoreTextLabel.font = UIFont(name: "AvenirNext-Bold", size: 50)
+        highscoreTextLabel.font = UIFont(name: "AvenirNext-Bold", size: 30)
         highscoreTextLabel.textColor = .black
         highscoreTextLabel.text = "Best Score:"
         highscoreTextLabel.textAlignment = .center
@@ -163,7 +164,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var highscoreLabel: UILabel = {
         let highscoreLabel = UILabel(frame: .zero)
         highscoreLabel.translatesAutoresizingMaskIntoConstraints = false
-        highscoreLabel.font = UIFont(name: "AvenirNext-Bold", size: 60)
+        highscoreLabel.font = UIFont(name: "AvenirNext-Bold", size: 35)
         highscoreLabel.textColor = .black
         highscoreLabel.textAlignment = .center
         highscoreLabel.text = "0"
@@ -185,7 +186,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         let playAgainButton = UIButton(frame: .zero)
         playAgainButton.translatesAutoresizingMaskIntoConstraints = false
         playAgainButton.backgroundColor = #colorLiteral(red: 0.4565016739, green: 0.8918543782, blue: 0.6923041558, alpha: 1)
-        playAgainButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 40)
+        playAgainButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 30)
         playAgainButton.setTitle("Play Again?", for: .normal)
         playAgainButton.setTitleColor(.black, for: .normal)
         playAgainButton.setTitleColor(.white, for: .highlighted)
@@ -281,7 +282,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         let pauseButton = UIButton(frame: .zero)
         pauseButton.translatesAutoresizingMaskIntoConstraints = false
         pauseButton.backgroundColor = .clear
-        pauseButton.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 22)
+        pauseButton.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 15)
         pauseButton.setTitle("Pause", for: .normal)
         pauseButton.setTitleColor(.black, for: .normal)
         pauseButton.addTarget(self, action: #selector(userDidPressPauseButton(_:)), for: .touchUpInside)
@@ -293,7 +294,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         let nightButton = UIButton(frame: .zero)
         nightButton.translatesAutoresizingMaskIntoConstraints = false
         nightButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-        nightButton.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 22)
+        nightButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 15)
         nightButton.setTitle("🌙 Mode", for: .normal)
         nightButton.isHidden = true
         nightButton.setTitleColor(.black, for: .normal)
@@ -307,7 +308,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         muteButton.translatesAutoresizingMaskIntoConstraints = false
         muteButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
         muteButton.isHidden = true
-        muteButton.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 22)
+        muteButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 15)
         muteButton.setTitle("Mute", for: .normal)
         muteButton.setTitleColor(.black, for: .normal)
         muteButton.setTitleColor(.white, for: .highlighted)
@@ -319,7 +320,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         let startButton = UIButton(frame: .zero)
         startButton.translatesAutoresizingMaskIntoConstraints = false
         startButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-        startButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 22)
+        startButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 15)
         startButton.setTitle("Let's Play", for: .normal)
         startButton.setTitleColor(.black, for: .normal)
         startButton.setTitleColor(.white, for: .highlighted)
@@ -331,7 +332,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         let checkLeaderboardButton = UIButton(frame: .zero)
         checkLeaderboardButton.translatesAutoresizingMaskIntoConstraints = false
         checkLeaderboardButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-        checkLeaderboardButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 22)
+        checkLeaderboardButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 15)
         checkLeaderboardButton.setTitle("Check Leaderboard", for: .normal)
         checkLeaderboardButton.setTitleColor(.black, for: .normal)
         checkLeaderboardButton.setTitleColor(.white, for: .highlighted)
@@ -468,6 +469,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     @objc func userDidPressPlayAgainButton(_ sender: UIButton) {
         gameScene.playedAgain()
+        interstitial = createAndLoadInterstitial()
         let startDefaults = UserDefaults.standard
         startDefaults.set(startPressed, forKey: "startPressed")
         startDefaults.synchronize()
@@ -504,9 +506,11 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         tauntLabel.isHidden = true
         playAgainButton.isHidden = true
         pauseButton.isHidden = false
+        livesLabel.isHidden = false
+        livesImageView.isHidden = false
         firstNumber = arc4random_uniform(12) + 1
         secondNumber = arc4random_uniform(3) + 1
-        while(firstNumber < secondNumber) {
+        while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
             firstNumber = arc4random_uniform(12) + 1
             secondNumber = arc4random_uniform(3) + 1
         }
@@ -521,7 +525,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     }
     
     @objc func userDidPressFightButton(_ sender: UIButton) {
-        let answer = Int32(answerLabel.text!);
+        let answer = Int(answerLabel.text!);
+        previousAnswer = answer!
         livesLabel.text = "x " + lives.description
         if answer! != (firstNumber * secondNumber) {
             playIncorrectSound()
@@ -532,44 +537,44 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             } else {
                 livesLabel.text = "x " + lives.description
                 if score >= 25 && score < 50 {
-                    firstNumber = arc4random_uniform(15) + 1
-                    secondNumber = arc4random_uniform(5) + 1
-                    while(firstNumber < secondNumber) {
-                        firstNumber = arc4random_uniform(15) + 1
-                        secondNumber = arc4random_uniform(5) + 1
+                    firstNumber = arc4random_uniform(15) + 2
+                    secondNumber = arc4random_uniform(5) + 2
+                    while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                        firstNumber = arc4random_uniform(15) + 2
+                        secondNumber = arc4random_uniform(5) + 2
                     }
                     numberOneLabel.text = firstNumber.description
                     numberTwoLabel.text = secondNumber.description
                     answerLabel.text = "0"
                     scoreLabel.text = score.description
                 } else if (score >= 50 && score < 75) {
-                    firstNumber = arc4random_uniform(19) + 1
-                    secondNumber = arc4random_uniform(12) + 1
-                    while(firstNumber < secondNumber) {
-                        firstNumber = arc4random_uniform(19) + 1
-                        secondNumber = arc4random_uniform(12) + 1
+                    firstNumber = arc4random_uniform(19) + 5
+                    secondNumber = arc4random_uniform(12) + 5
+                    while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                        firstNumber = arc4random_uniform(19) + 5
+                        secondNumber = arc4random_uniform(12) + 5
                     }
                     numberOneLabel.text = firstNumber.description
                     numberTwoLabel.text = secondNumber.description
                     answerLabel.text = "0"
                     scoreLabel.text = score.description
                 } else if score >= 75 && score < 100 {
-                    firstNumber = arc4random_uniform(25) + 1
-                    secondNumber = arc4random_uniform(15) + 1
-                    while(firstNumber < secondNumber) {
-                        firstNumber = arc4random_uniform(25) + 1
-                        secondNumber = arc4random_uniform(15) + 1
+                    firstNumber = arc4random_uniform(25) + 7
+                    secondNumber = arc4random_uniform(15) + 7
+                    while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                        firstNumber = arc4random_uniform(25) + 7
+                        secondNumber = arc4random_uniform(15) + 7
                     }
                     numberOneLabel.text = firstNumber.description
                     numberTwoLabel.text = secondNumber.description
                     answerLabel.text = "0"
                     scoreLabel.text = score.description
                 } else if score >= 100 {
-                    firstNumber = arc4random_uniform(25) + 1
-                    secondNumber = arc4random_uniform(25) + 1
-                    while(firstNumber < secondNumber) {
-                        firstNumber = arc4random_uniform(25) + 1
-                        secondNumber = arc4random_uniform(25) + 1
+                    firstNumber = arc4random_uniform(25) + 10
+                    secondNumber = arc4random_uniform(25) + 10
+                    while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                        firstNumber = arc4random_uniform(25) + 10
+                        secondNumber = arc4random_uniform(25) + 10
                     }
                     numberOneLabel.text = firstNumber.description
                     numberTwoLabel.text = secondNumber.description
@@ -578,7 +583,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
                 } else {
                     firstNumber = arc4random_uniform(12) + 1
                     secondNumber = arc4random_uniform(3) + 1
-                    while(firstNumber < secondNumber) {
+                    while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
                         firstNumber = arc4random_uniform(12) + 1
                         secondNumber = arc4random_uniform(3) + 1
                     }
@@ -592,18 +597,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             playCorrectSound()
             score = score + 1
             gameScene.correct(score: score, nightCount: nightPressed)
-            let bestScoreInt = GKScore(leaderboardIdentifier: LEADERBOARD_ID)
-            bestScoreInt.value = Int64(score)
-            GKScore.report([bestScoreInt]) { (error) in
-                if error != nil {
-                    print(error!.localizedDescription)
-                } else {
-                    print("Best Score submitted to your Leaderboard!")
-                }
-            }
+            reportScoreToGC()
             //Check for Score Achievements
-            
-            
             if score >= 25 && score < 50 {
                 if score == 25 {
                     let achievement = GKAchievement(identifier: "10p")
@@ -613,11 +608,11 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
                     
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
-                firstNumber = arc4random_uniform(15) + 1
-                secondNumber = arc4random_uniform(5) + 1
-                while(firstNumber < secondNumber) {
-                    firstNumber = arc4random_uniform(15) + 1
-                    secondNumber = arc4random_uniform(5) + 1
+                firstNumber = arc4random_uniform(15) + 2
+                secondNumber = arc4random_uniform(5) + 2
+                while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                    firstNumber = arc4random_uniform(15) + 2
+                    secondNumber = arc4random_uniform(5) + 2
                 }
                 numberOneLabel.text = firstNumber.description
                 numberTwoLabel.text = secondNumber.description
@@ -632,11 +627,11 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
                     
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
-                firstNumber = arc4random_uniform(19) + 1
-                secondNumber = arc4random_uniform(12) + 1
-                while(firstNumber < secondNumber) {
-                    firstNumber = arc4random_uniform(19) + 1
-                    secondNumber = arc4random_uniform(12) + 1
+                firstNumber = arc4random_uniform(19) + 5
+                secondNumber = arc4random_uniform(12) + 5
+                while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                    firstNumber = arc4random_uniform(19) + 5
+                    secondNumber = arc4random_uniform(12) + 5
                 }
                 numberOneLabel.text = firstNumber.description
                 numberTwoLabel.text = secondNumber.description
@@ -651,11 +646,11 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
                     
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
-                firstNumber = arc4random_uniform(25) + 1
-                secondNumber = arc4random_uniform(15) + 1
-                while(firstNumber < secondNumber) {
-                    firstNumber = arc4random_uniform(25) + 1
-                    secondNumber = arc4random_uniform(15) + 1
+                firstNumber = arc4random_uniform(25) + 7
+                secondNumber = arc4random_uniform(15) + 7
+                while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                    firstNumber = arc4random_uniform(25) + 7
+                    secondNumber = arc4random_uniform(15) + 7
                 }
                 numberOneLabel.text = firstNumber.description
                 numberTwoLabel.text = secondNumber.description
@@ -670,11 +665,11 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
                     
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
-                firstNumber = arc4random_uniform(25) + 1
-                secondNumber = arc4random_uniform(25) + 1
-                while(firstNumber < secondNumber) {
-                    firstNumber = arc4random_uniform(25) + 1
-                    secondNumber = arc4random_uniform(25) + 1
+                firstNumber = arc4random_uniform(25) + 10
+                secondNumber = arc4random_uniform(25) + 10
+                while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
+                    firstNumber = arc4random_uniform(25) + 10
+                    secondNumber = arc4random_uniform(25) + 10
                 }
                 numberOneLabel.text = firstNumber.description
                 numberTwoLabel.text = secondNumber.description
@@ -683,7 +678,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             } else {
                 firstNumber = arc4random_uniform(12) + 1
                 secondNumber = arc4random_uniform(3) + 1
-                while(firstNumber < secondNumber) {
+                while(firstNumber < secondNumber || previousAnswer == (firstNumber * secondNumber)) {
                     firstNumber = arc4random_uniform(12) + 1
                     secondNumber = arc4random_uniform(3) + 1
                 }
@@ -921,6 +916,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     func gameOver() {
         gameScene.gameOver()
+        reportScoreToGC()
         if score > highscore {
             highscore = score
             highscoreLabel.text = "\(highscore)"
@@ -928,6 +924,13 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             highscoreDefaults.set(highscore, forKey: "highscore")
             highscoreDefaults.synchronize()
         }
+        if interstitial.isReady {
+            interstitial.present(fromRootViewController: self)
+        } else {
+            print("Ad wasn't ready")
+        }
+        livesLabel.isHidden = true
+        livesImageView.isHidden = true
         highscoreLabel.isHidden = false
         highscoreTextLabel.isHidden = false
         playAgainButton.setTitle("Play Again?", for: .normal)
@@ -963,6 +966,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         answerLabel.isHidden = true
         scoreLabel.isHidden = true
         scoreTextLabel.isHidden = true
+        previousAnswer = 0
     }
     
     func showEverything() {
@@ -1055,6 +1059,23 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             ])
     }
     
+    func reportScoreToGC() {
+        let bestScoreInt = GKScore(leaderboardIdentifier: LEADERBOARD_ID)
+        //Report To GameCenter
+        bestScoreInt.value = Int64(score)
+        let currentGCScore = bestScoreInt.value
+        if (currentGCScore <= highscore) {
+            bestScoreInt.value = Int64(highscore)
+            GKScore.report([bestScoreInt]) { (error) in
+                if error != nil {
+                    print(error!.localizedDescription)
+                } else {
+                    print("Best Score submitted to your Leaderboard!")
+                }
+            }
+        }
+    }
+    
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         print("Banner loaded successfully")
         adBannerView = bannerView
@@ -1095,12 +1116,29 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         }
     }
     
+    func createAndLoadInterstitial() -> GADInterstitial {
+        //Real
+        interstitial = GADInterstitial(adUnitID: "ca-app-pub-6279961815562254/6233439273")
+        //Testing w/ Video
+        //interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/5135589807")
+        //Testing w/ Static
+        //interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+        interstitial.delegate = self as? GADInterstitialDelegate
+        let request = GADRequest()
+        interstitial.load(request)
+        return interstitial
+    }
+    
+    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        interstitial = createAndLoadInterstitial()
+    }
+    
     //MARK:- View Life-cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         adBannerView.load(GADRequest())
-        authenticateLocalPlayer()
+        interstitial = createAndLoadInterstitial()
         
         let muteDefaults = UserDefaults.standard
         if muteDefaults.value(forKey: "mutePressed") != nil {
