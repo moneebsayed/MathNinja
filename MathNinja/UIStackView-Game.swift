@@ -8,7 +8,13 @@
 
 import UIKit
 
+// MARK: - Extension that defines a buttons stack view that creates the keypads
 public extension UIStackView {
+    
+    /// Initializer for a row of the keypad for the app
+    ///
+    /// - Parameter buttons: the buttons to initialize the keypad with
+    /// - Returns: a row of the keypad within a stackView
     public static func horizontalStackViewWithButtons(buttons: [UIButton]) -> UIStackView {
         let buttonsStackView = UIStackView()
         buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +26,6 @@ public extension UIStackView {
         for button in buttons {
             buttonsStackView.addArrangedSubview(button)
         }
-        
         return buttonsStackView
     }
 }

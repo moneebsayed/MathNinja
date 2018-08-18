@@ -66,7 +66,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return skView
     }()
     
-    ///MARK-: Header of the View
+    //MARK:- Header of the View
     
     /// The Lives Image View
     lazy var livesImageView: UIImageView = {
@@ -131,7 +131,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return highscoreLabel
     }()
     
-    ///MARK-: The Equation Section
+    //MARK:- The Equation Section
     
     /// This label represents the first number to multiply
     lazy var numberOneLabel: UILabel = {
@@ -181,7 +181,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return answerLabel
     }()
     
-    ///MARK-: Keypad
+    //MARK:- Keypad
     
     /// The UIButton for inputting 1 into the answerLabel
     lazy var oneButton: UIButton = {
@@ -267,7 +267,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return fightButton
     }()
     
-    ///MARK-: The Pause Menu
+    //MARK:- The Pause Menu
     
     /// The UIButton that pauses the gameplay upon user press
     lazy var pauseButton: UIButton = {
@@ -323,6 +323,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return muteButton
     }()
     
+    //MARK:- Start Menu
+    
     /// UIButton that starts the game
     lazy var startButton: UIButton = {
         let startButton = UIButton(frame: .zero)
@@ -348,16 +350,14 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         checkLeaderboardButton.addTarget(self, action: #selector(userDidPressCKLeaderboardButton(_:)), for: .touchUpInside)
         return checkLeaderboardButton
     }()
-    //Start Menu
-    //userDidPressCKLeaderboardButton
-    @objc func userDidPressCKLeaderboardButton(_ sender: UIButton) {
-        let gcVC = GKGameCenterViewController()
-        gcVC.gameCenterDelegate = self
-        gcVC.viewState = .leaderboards
-        gcVC.leaderboardIdentifier = LEADERBOARD_ID
-        present(gcVC, animated: true, completion: nil)
-    }
-    //userDidPressStartButton
+    
+    //MARK:- Actions for the each UIButton
+    
+    //MARK:-Start Menu Actions
+    
+    /// Action that occurs when the start button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
     @objc func userDidPressStartButton(_ sender: UIButton) {
         let startDefaults = UserDefaults.standard
         startDefaults.set(startPressed, forKey: "startPressed")
@@ -396,26 +396,23 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         startPressed = startPressed + 1
         showEverything()
     }
-    //Pause Menu
     
-    //userDidPressMuteButton
-    @objc func userDidPressMuteButton(_ sender: UIButton) {
-        muteCount = muteCount + 1
-        let muteDefaults = UserDefaults.standard
-        muteDefaults.set(muteCount, forKey: "mutePressed")
-        muteDefaults.synchronize()
-        muteHandle()
-    }
-    //userDidPressNightButton
-    @objc func userDidPressNightButton(_ sender: UIButton) {
-        nightPressed = nightPressed + 1
-        let nightDefaults = UserDefaults.standard
-        nightDefaults.set(nightPressed, forKey: "nightPressed")
-        nightDefaults.synchronize()
-        nightHandle()
+    /// Action that occurs when the Check Leaderboard button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressCKLeaderboardButton(_ sender: UIButton) {
+        let gcVC = GKGameCenterViewController()
+        gcVC.gameCenterDelegate = self
+        gcVC.viewState = .leaderboards
+        gcVC.leaderboardIdentifier = LEADERBOARD_ID
+        present(gcVC, animated: true, completion: nil)
     }
     
-    //userDidPressPauseButton
+    //MARK:-Pause Menu Actions
+    
+    /// Action that occurs when the pause button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
     @objc func userDidPressPauseButton(_ sender: UIButton) {
         if (pausePressed % 2) == 0 {
             gameScene.isPaused = true
@@ -463,8 +460,32 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         }
         pausePressed = pausePressed + 1
     }
-    //MARK: Target Action
     
+    /// Action that occurs when the mute button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressMuteButton(_ sender: UIButton) {
+        muteCount = muteCount + 1
+        let muteDefaults = UserDefaults.standard
+        muteDefaults.set(muteCount, forKey: "mutePressed")
+        muteDefaults.synchronize()
+        muteHandle()
+    }
+    
+    /// Action that occurs when the night button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressNightButton(_ sender: UIButton) {
+        nightPressed = nightPressed + 1
+        let nightDefaults = UserDefaults.standard
+        nightDefaults.set(nightPressed, forKey: "nightPressed")
+        nightDefaults.synchronize()
+        nightHandle()
+    }
+    
+    /// Action that occurs when the play again/reset button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
     @objc func userDidPressPlayAgainButton(_ sender: UIButton) {
         gameScene.playedAgain()
         interstitial = createAndLoadInterstitial()
@@ -517,18 +538,98 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         nightButton.isHidden = true
     }
     
+    //MARK:- Keypad Actions
+    
+    /// Action that occurs when the zero button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressZeroButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 0)
+    }
+    
+    /// Action that occurs when the one button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressOneButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 1)
+    }
+    
+    /// Action that occurs when the two button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressTwoButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 2)
+    }
+    
+    /// Action that occurs when the three button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressThreeButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 3)
+    }
+    
+    /// Action that occurs when the four button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressFourButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 4)
+    }
+    
+    /// Action that occurs when the five button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressFiveButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 5)
+    }
+    
+    /// Action that occurs when the six button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressSixButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 6)
+    }
+    
+    /// Action that occurs when the seven button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressSevenButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 7)
+    }
+    
+    /// Action that occurs when the eight button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressEightButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 8)
+    }
+    
+    /// Action that occurs when the nine button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
+    @objc func userDidPressNineButton(_ sender: UIButton) {
+        appendValueToAnswerLabel(value: 9)
+    }
+    
+    /// Action that occurs when the clear button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
     @objc func userDidPressClearButton(_ sender: UIButton) {
         answerLabel.text = "0"
     }
     
+    /// Action that occurs when the fight button is pressed
+    ///
+    /// - Parameter sender: the touch on the button
     @objc func userDidPressFightButton(_ sender: UIButton) {
         let answer = Int(answerLabel.text!);
         previousAnswer = answer!
         livesLabel.text = "x " + lives.description
+        // Check to see if answer is right or wrong
         if answer! != (firstNumber * secondNumber) {
             playIncorrectSound()
             lives = lives - 1
             gameScene.incorrect(firstNumber: Int(firstNumber), secondNumber: Int(secondNumber))
+            // Check to see if game over
             if lives == -1 {
                 gameOver()
             } else {
@@ -679,50 +780,14 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         }
     }
     
-    @objc func userDidPressZeroButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 0)
-    }
-    
-    @objc func userDidPressOneButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 1)
-    }
-    
-    @objc func userDidPressTwoButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 2)
-    }
-    
-    @objc func userDidPressThreeButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 3)
-    }
-    
-    @objc func userDidPressFourButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 4)
-    }
-    
-    @objc func userDidPressFiveButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 5)
-    }
-    
-    @objc func userDidPressSixButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 6)
-    }
-    
-    @objc func userDidPressSevenButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 7)
-    }
-    
-    @objc func userDidPressEightButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 8)
-    }
-    
-    @objc func userDidPressNineButton(_ sender: UIButton) {
-        appendValueToAnswerLabel(value: 9)
-    }
-    
     //MARK: Helper Methods
+    
+    /// This method determines the which mode the game is in day or night
     func nightHandle() {
         gameScene.skyCheck(nightCount: nightPressed)
+        // Night Mode Enabled
         if (nightPressed % 2) == 0 {
+            //Checks for achievements
             if nightPressed == 2 {
                 let achievement = GKAchievement(identifier: "darkness")
                 achievement.percentComplete = Double(score / 5)
@@ -792,7 +857,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             zeroButton.backgroundColor = .blue
             clearButton.backgroundColor = .blue
             fightButton.backgroundColor = .blue
-        } else {
+        } else { // Night Mode Disabled
             nightButton.setTitle("🌙 Mode", for: .normal)
             if nightPressed == 1 {
                 let achievement = GKAchievement(identifier: "darkness")
@@ -865,12 +930,14 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         }
     }
     
+    /// This method determines if the game is muted
     func muteHandle() {
+        // Game is muted
         if (muteCount % 2) == 0 {
             muteButton.setTitle("Unmute", for: .normal)
             bgAudioPlayer?.pause()
             audioPlayer?.stop()
-        } else {
+        } else { // Game is unmuted
             muteButton.setTitle("Mute", for: .normal)
             bgAudioPlayer?.prepareToPlay()
             bgAudioPlayer?.play()
@@ -878,23 +945,24 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             playBackSound()
         }
     }
+    
+    /// Function adds a value to the answer label
+    ///
+    /// - Parameter value: The value to add to the label
     func appendValueToAnswerLabel(value: Int) {
         guard let text = answerLabel.text, let number = Int("\(text)\(value)") else {
             print("An error occurred while updating the answerLabel.")
             return
         }
-        
         answerLabel.text = "\(number)"
     }
     
+    /// Hides the status bar
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
-    func solveEquation(firstNumber: Int, secondNumber: Int) -> String {
-        return "\(firstNumber) x \(secondNumber) = \(firstNumber * secondNumber)"
-    }
-    
+    /// The function ends the game and displays an ad
     func gameOver() {
         gameScene.gameOver()
         reportScoreToGC()
@@ -923,6 +991,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         answerLabel.isHidden = true;
     }
     
+    /// Function hides the buttons for the start menu and when the game is paused
     func hideEverything() {
         pauseButton.isHidden = true
         numberOneLabel.isHidden = true
@@ -949,6 +1018,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         previousAnswer = 0
     }
     
+    /// Function unhides the buttons for when the game begins and when the game is unpaused
     func showEverything() {
         pauseButton.isHidden = false
         numberOneLabel.isHidden = false
@@ -973,6 +1043,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         scoreLabel.isHidden = false
         scoreTextLabel.isHidden = false
     }
+    
     
     func playCorrectSound() {
         let url = Bundle.main.url(forResource: "correct", withExtension: "mp3")!
@@ -1011,6 +1082,9 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         }
     }
     
+    /// Method displays banner ad to the view when it loads
+    ///
+    /// - Parameter bannerView: the banner ad to display
     func addBannerViewToView(_ bannerView: GADBannerView) {
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bannerView)
@@ -1032,6 +1106,82 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             ])
     }
     
+    /// Method checks to see if a banner ad recieved an ad
+    ///
+    /// - Parameter bannerView: the banner ad to display
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        print("Banner loaded successfully")
+        adBannerView = bannerView
+    }
+    
+    /// Method checks to see if a banner ad failed to recieve an ad
+    ///
+    /// - Parameters:
+    ///   - bannerView: The banner ad that failed to display
+    ///   - error: Error that prints on fail
+    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
+        print("Fail to receive ads")
+        print(error)
+    }
+    
+    
+    /// Method gets an ad and puts it into an interstitial ad
+    ///
+    /// - Returns: the newly filled interstitial ad
+    func createAndLoadInterstitial() -> GADInterstitial {
+        //Real
+        interstitial = GADInterstitial(adUnitID: "ca-app-pub-6279961815562254/6233439273")
+        //Testing w/ Video
+        //interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/5135589807")
+        //Testing w/ Static
+        //interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+        interstitial.delegate = self as? GADInterstitialDelegate
+        let request = GADRequest()
+        interstitial.load(request)
+        return interstitial
+    }
+    
+    /// Method reloads another ad in the background upon dismissing the interstitial ad
+    ///
+    /// - Parameter ad: the ad to dismiss
+    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        interstitial = createAndLoadInterstitial()
+    }
+    //MARK:- GameCenter Methods
+    
+    /// Dismisses the Game Center Leaderboard
+    ///
+    /// - Parameter gameCenterViewController: The gameCenterViewController to be dismissed
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    /// Function authenticates the player with Game Center
+    func authenticateLocalPlayer() {
+        let localPlayer: GKLocalPlayer = GKLocalPlayer.localPlayer()
+        localPlayer.authenticateHandler = {(ViewController, error) -> Void in
+            if((ViewController) != nil) {
+                // 1. Show login if player is not logged in
+                self.present(ViewController!, animated: true, completion: nil)
+            } else if (localPlayer.isAuthenticated) {
+                // 2. Player is already authenticated & logged in, load game center
+                self.gcEnabled = true
+                // Get the default leaderboard ID
+                localPlayer.loadDefaultLeaderboardIdentifier(completionHandler: { (leaderboardIdentifer, error) in
+                    if error != nil { print(error!)
+                    } else { self.gcDefaultLeaderBoard = leaderboardIdentifer! }
+                })
+            } else {
+                // 3. Game center is not enabled on the users device
+                self.gcEnabled = false
+                print("Local player could not be authenticated!")
+                print(error!)
+            }
+        }
+    }
+    
+    /// Method reports highscore to gamecenter
     func reportScoreToGC() {
         let bestScoreInt = GKScore(leaderboardIdentifier: LEADERBOARD_ID)
         //Report To GameCenter
@@ -1049,68 +1199,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         }
     }
     
-    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        print("Banner loaded successfully")
-        adBannerView = bannerView
-    }
-    
-    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
-        print("Fail to receive ads")
-        print(error)
-    }
-    
-    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
-        gameCenterViewController.dismiss(animated: true, completion: nil)
-    }
-    
-    func authenticateLocalPlayer() {
-        let localPlayer: GKLocalPlayer = GKLocalPlayer.localPlayer()
-        localPlayer.authenticateHandler = {(ViewController, error) -> Void in
-            if((ViewController) != nil) {
-                // 1. Show login if player is not logged in
-                self.present(ViewController!, animated: true, completion: nil)
-            } else if (localPlayer.isAuthenticated) {
-                // 2. Player is already authenticated & logged in, load game center
-                self.gcEnabled = true
-                
-                // Get the default leaderboard ID
-                localPlayer.loadDefaultLeaderboardIdentifier(completionHandler: { (leaderboardIdentifer, error) in
-                    if error != nil { print(error!)
-                    } else { self.gcDefaultLeaderBoard = leaderboardIdentifer! }
-                })
-                
-            } else {
-                // 3. Game center is not enabled on the users device
-                self.gcEnabled = false
-                print("Local player could not be authenticated!")
-                print(error!)
-            }
-        }
-    }
-    
-    func createAndLoadInterstitial() -> GADInterstitial {
-        //Real
-        interstitial = GADInterstitial(adUnitID: "ca-app-pub-6279961815562254/6233439273")
-        //Testing w/ Video
-        //interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/5135589807")
-        //Testing w/ Static
-        //interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
-        interstitial.delegate = self as? GADInterstitialDelegate
-        let request = GADRequest()
-        interstitial.load(request)
-        return interstitial
-    }
-    
-    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        interstitial = createAndLoadInterstitial()
-    }
-    
     //MARK:- View Life-cycle
+    
+    /// Function that is used upon the initial loading of the App
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        // Load Ads
         adBannerView.load(GADRequest())
         interstitial = createAndLoadInterstitial()
+        // Authenticate player for Game Center
         authenticateLocalPlayer()
         let muteDefaults = UserDefaults.standard
         if muteDefaults.value(forKey: "mutePressed") != nil {
@@ -1132,7 +1229,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         if startDefaults.value(forKey: "startPressed") != nil {
             startPressed = startDefaults.value(forKey: "startPressed") as! Int
         }
-        
         let highscoreDefaults = UserDefaults.standard
         if highscoreDefaults.value(forKey: "highscore") != nil {
             highscore = highscoreDefaults.value(forKey: "highscore") as! Int
@@ -1140,14 +1236,13 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         }
         hideEverything()
         startButton.isHidden = false
-        // Layout.
+        // Layout for the app
         let scoreBoardStackView = UIStackView()
         scoreBoardStackView.translatesAutoresizingMaskIntoConstraints = false
         scoreBoardStackView.axis = .horizontal
         scoreBoardStackView.spacing = 10
         scoreBoardStackView.alignment = .fill
         scoreBoardStackView.distribution = .fill
-        
         scoreBoardStackView.addArrangedSubview(scoreTextLabel)
         scoreBoardStackView.addArrangedSubview(scoreLabel)
         
@@ -1157,7 +1252,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         lifeStackView.spacing = 10
         lifeStackView.alignment = .fill
         lifeStackView.distribution = .fill
-        
         lifeStackView.addArrangedSubview(livesImageView)
         lifeStackView.addArrangedSubview(livesLabel)
         
