@@ -8,27 +8,43 @@
 
 import SpriteKit
 
+/// This Class Represents the GameScene for the Sprites
 class GameScene: SKScene {
     
+    /// The Good Guy in the GameScene
     var player: SKSpriteNode = SKSpriteNode()
     
+    /// The Bad Guy in the GameScene
     var enemy: SKSpriteNode = SKSpriteNode()
     
+    /// The SK Label Node to display the correct answer or positive phrases
     var tauntLabel: SKLabelNode = SKLabelNode()
     
+    /// The SK Label Node that displays Game Over at Game Over
     var gameOverLabel: SKLabelNode = SKLabelNode()
     
+    /// The Good Guy's projectile that he fires on correct answers
     var weapon: SKSpriteNode = SKSpriteNode()
     
+    /// The Bad Guy's projectile that he fires on correct answers
     var enemyFire: SKSpriteNode = SKSpriteNode()
     
+    /// The daytime sky that displays during day mode
     var daySky: SKSpriteNode = SKSpriteNode()
     
+    /// The night time sky that displays during day mode
     var nightSky: SKSpriteNode = SKSpriteNode()
     
+    /// The Array of positive affirmations to display on correct
     let happyArray = ["Great Job!","Keep it Up!", "Nice!", "Take That!", "WOOHOO!", "Math Punch!", "Bam!", "Pow!"]
     
+    
+    /// Called after the view controller is added or removed from a
+    /// container view controller.
+    ///
+    /// - Parameter view: The view
     override func didMove(to view: SKView) {
+        ///: Initializing the Nodes
         if let somePlayer: SKSpriteNode = self.childNode(withName: "Player") as? SKSpriteNode {
             player = somePlayer
             player.physicsBody?.isDynamic = false
@@ -80,11 +96,36 @@ class GameScene: SKScene {
         }
     }
     
+    /// This method will be called by the GameViewController, when a question
+    /// is answered incorrectly.
+    ///
+    /// - Parameters:
+    ///   - firstNumber: The first number to be passed into the equation
+    ///   - secondNumber: The second number to be passed into the equation
+    public func incorrect(firstNumber: Int, secondNumber: Int) {
+        fireEnemyWeapon()
+        tauntLabel.isHidden = false
+        gameOverLabel.isHidden = true
+        tauntLabel.text = solveEquation(firstNumber: firstNumber, secondNumber: secondNumber)
+        tauntLabel.fontColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
+        let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
+        let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
+        let seq = SKAction.sequence([comeIn, goAway])
+        tauntLabel.run(seq)
+    }
+    
+    /// This method will be called by the GameViewController, when a question
+    /// is answered correctly.
+    ///
+    /// - Parameters:
+    ///   - score: The current score which is needed for accurate message displaying
+    ///   - nightCount: The nightCount in order to determine, which mode is enabled
     public func correct(score: Int, nightCount: Int) {
         skyCheck(nightCount: nightCount)
         fireWeapon()
         tauntLabel.isHidden = false
         gameOverLabel.isHidden = true
+        ///: Determining what message to display based off the score
         if score == 25 {
             tauntLabel.text = "Now to Medium Mode!"
             tauntLabel.fontColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -93,7 +134,6 @@ class GameScene: SKScene {
             tauntLabel.run(SKAction.fadeIn(withDuration: 2.0))
         } else if score > 25 && score < 50 {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
@@ -119,7 +159,6 @@ class GameScene: SKScene {
             tauntLabel.run(SKAction.fadeIn(withDuration: 2.0))
         } else if score > 75 && score < 100 {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
@@ -139,7 +178,6 @@ class GameScene: SKScene {
             tauntLabel.run(seq)
         } else {
             tauntLabel.text = happyArray[Int(arc4random_uniform(6))]
-            
             let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
             let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
             let seq = SKAction.sequence([comeIn, goAway])
@@ -147,38 +185,7 @@ class GameScene: SKScene {
         }
     }
     
-    public func playedAgain() {
-        tauntLabel.isHidden = false
-        gameOverLabel.isHidden = true
-        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
-        let moveToBackX: SKAction = SKAction.moveTo(x: -205.158, duration: 0.25)
-        let seq = SKAction.sequence([moveToBackX, fadeIn])
-        player.run(seq)
-    }
-    
-    public func gameOver() {
-        tauntLabel.isHidden = true
-        gameOverLabel.isHidden = false
-        gameOverLabel.run(SKAction(named: "Special")!)
-        enemy.run(SKAction(named: "Special")!)
-        let moveOutsideX: SKAction = SKAction.moveTo(x: -500, duration: 0.1)
-        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
-        let seq = SKAction.sequence([moveOutsideX, fadeOut])
-        player.run(seq)
-    }
-    
-    public func incorrect(firstNumber: Int, secondNumber: Int) {
-        fireEnemyWeapon()
-        tauntLabel.isHidden = false
-        gameOverLabel.isHidden = true
-        tauntLabel.text = solveEquation(firstNumber: firstNumber, secondNumber: secondNumber)
-        tauntLabel.fontColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
-        let comeIn:SKAction = SKAction.fadeIn(withDuration: 1.0)
-        let goAway:SKAction = SKAction.fadeOut(withDuration: 2.0)
-        let seq = SKAction.sequence([comeIn, goAway])
-        tauntLabel.run(seq)
-    }
-    
+    /// Method to fire Good Guy's Projectile at Bad Guy
     func fireWeapon() {
         weapon.isHidden = false
         let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
@@ -188,19 +195,17 @@ class GameScene: SKScene {
         //Hit Bad Guy
         let rotateBadGuy: SKAction = SKAction.rotate(byAngle: 360, duration: 0.30)
         let rotateBack: SKAction = SKAction.rotate(toAngle: 0, duration: 0.25, shortestUnitArc: false)
-        //let rotateBadGuyBack: SKAction = SKAction.rotate(toAngle: 369, duration: 1)
         //Reload
         let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
         let moveToBackX: SKAction = SKAction.moveTo(x: -147.9, duration: 0.25)
         let moveToBackY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.25)
         let seq = SKAction.sequence([fadeIn, moveOutsideX, moveToOtherSideY, fadeOut, moveToBackX, moveToBackY])
-        //let seq2 = SKAction.sequence([fadeOut, moveToBackX, moveToBackY])
         let badSeq = SKAction.sequence([rotateBadGuy, rotateBack, moveToOtherSideX, moveToOtherSideY])
         weapon.run(seq)
         enemy.run(badSeq)
-        //weapon.run(seq2)
     }
     
+    /// Method to fire Bad Guy's Projectile at Bad Guy
     func fireEnemyWeapon() {
         enemyFire.isHidden = false
         let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
@@ -209,20 +214,19 @@ class GameScene: SKScene {
         //Hit Good Guy
         let rotateGoodGuy: SKAction = SKAction.rotate(byAngle: 360, duration: 0.30)
         let rotateBack: SKAction = SKAction.rotate(toAngle: 0, duration: 0.25, shortestUnitArc: false)
-        //let rotateBadGuyBack: SKAction = SKAction.rotate(toAngle: 369, duration: 1)
         //Reload
         let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
         let moveToBackX: SKAction = SKAction.moveTo(x: -205.158, duration: 0.25)
-        //175.906
         let moveToWeapBackX: SKAction = SKAction.moveTo(x: 175.906, duration: 0.25)
-        //let moveToBackY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.25)
         let seq = SKAction.sequence([fadeIn, moveOutsideX, fadeOut, moveToWeapBackX, moveToOtherSideY])
-        //let seq2 = SKAction.sequence([fadeOut, moveToBackX, moveToBackY])
         let goodSeq = SKAction.sequence([rotateGoodGuy, rotateBack, moveToBackX, moveToOtherSideY])
         enemyFire.run(seq)
         player.run(goodSeq)
-        //weapon.run(seq2)
     }
+    
+    /// This method is called to check the game mode in regards to day/night
+    ///
+    /// - Parameter nightCount: The nightCount in order to determine, which mode is enabled
     public func skyCheck(nightCount: Int) {
         if (nightCount % 2) == 0 {
             tauntLabel.fontColor = #colorLiteral(red: 0.7490196078, green: 0.3529411765, blue: 0.9490196078, alpha: 1)
@@ -234,11 +238,36 @@ class GameScene: SKScene {
             daySky.run(SKAction.unhide())
         }
     }
-    func solveEquation(firstNumber: Int, secondNumber: Int) -> String {
-        return "\(firstNumber) x \(secondNumber) = \(firstNumber * secondNumber)"
+    
+    /// Method is called to reset nodes back to their original states.
+    public func playedAgain() {
+        tauntLabel.isHidden = false
+        gameOverLabel.isHidden = true
+        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
+        let moveToBackX: SKAction = SKAction.moveTo(x: -205.158, duration: 0.25)
+        let seq = SKAction.sequence([moveToBackX, fadeIn])
+        player.run(seq)
     }
     
-    override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+    /// Method is called to display the game over message and fade the enemy out.
+    public func gameOver() {
+        tauntLabel.isHidden = true
+        gameOverLabel.isHidden = false
+        gameOverLabel.run(SKAction(named: "Special")!)
+        enemy.run(SKAction(named: "Special")!)
+        let moveOutsideX: SKAction = SKAction.moveTo(x: -500, duration: 0.1)
+        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
+        let seq = SKAction.sequence([moveOutsideX, fadeOut])
+        player.run(seq)
+    }
+    
+    /// Helper Method to get the message to display for incorrect question
+    ///
+    /// - Parameters:
+    ///   - firstNumber: The first number to multiply
+    ///   - secondNumber: The second number to multiply
+    /// - Returns: The string representation of the equation with the correct answer
+    func solveEquation(firstNumber: Int, secondNumber: Int) -> String {
+        return "\(firstNumber) x \(secondNumber) = \(firstNumber * secondNumber)"
     }
 }

@@ -12,8 +12,8 @@
 		A932CDD52070301700028548 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = A932CDD42070301700028548 /* Actions.sks */; };
 		A932CDDE2070301700028548 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A932CDDD2070301700028548 /* Assets.xcassets */; };
 		A932CDE12070301700028548 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A932CDDF2070301700028548 /* LaunchScreen.storyboard */; };
-		A9A88ED32071ADB70044CDE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A88ED22071ADB60044CDE1 /* AppDelegate.swift */; };
 		A9E70FE52112E74100B2DE86 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */; };
+		A9ECB2672126066F00C5D28C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9ECB2662126066F00C5D28C /* AppDelegate.swift */; };
 		A9F009DE20FD49DF009FA561 /* UIButton-Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F009DA20FD49DF009FA561 /* UIButton-Game.swift */; };
 		A9F009DF20FD49DF009FA561 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F009DB20FD49DF009FA561 /* GameScene.swift */; };
 		A9F009E020FD49DF009FA561 /* UIStackView-Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F009DC20FD49DF009FA561 /* UIStackView-Game.swift */; };
@@ -35,8 +35,8 @@
 		A932CDDD2070301700028548 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A932CDE02070301700028548 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A932CDE22070301700028548 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A9A88ED22071ADB60044CDE1 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../../../.Trash/AppDelegate.swift; sourceTree = "<group>"; };
 		A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A9ECB2662126066F00C5D28C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A9F009DA20FD49DF009FA561 /* UIButton-Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton-Game.swift"; sourceTree = "<group>"; };
 		A9F009DB20FD49DF009FA561 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		A9F009DC20FD49DF009FA561 /* UIStackView-Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStackView-Game.swift"; sourceTree = "<group>"; };
@@ -101,7 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */,
-				A9A88ED22071ADB60044CDE1 /* AppDelegate.swift */,
+				A9ECB2662126066F00C5D28C /* AppDelegate.swift */,
 				A9F009DB20FD49DF009FA561 /* GameScene.swift */,
 				A9F009DD20FD49DF009FA561 /* GameViewController.swift */,
 				A9F009DA20FD49DF009FA561 /* UIButton-Game.swift */,
@@ -244,7 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9A88ED32071ADB70044CDE1 /* AppDelegate.swift in Sources */,
+				A9ECB2672126066F00C5D28C /* AppDelegate.swift in Sources */,
 				A9F009DE20FD49DF009FA561 /* UIButton-Game.swift in Sources */,
 				A9F009E120FD49DF009FA561 /* GameViewController.swift in Sources */,
 				A9F009DF20FD49DF009FA561 /* GameScene.swift in Sources */,

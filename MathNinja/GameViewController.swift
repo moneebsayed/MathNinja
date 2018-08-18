@@ -13,43 +13,43 @@ import AVFoundation
 import GoogleMobileAds
 import GameKit
 
+/// The GameViewController Class Contains the Game Content and Rules
 class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterControllerDelegate {
     //Game Center Integration
     var gcEnabled = Bool()
     var gcDefaultLeaderBoard = String()
     let LEADERBOARD_ID = "com.score.multiplyninja"
-    //MARK:- Properties
-    var startPressed = 0
+    /// Audio Controller
     var bgAudioPlayer : AVAudioPlayer?
     var audioPlayer : AVAudioPlayer?
+    /// Game Properties
     var firstNumber = arc4random_uniform(12) + 1
     var secondNumber = arc4random_uniform(3) + 1
+    var startPressed = 0
     var lives = 3
     var score = 0
     var highscore = 0
     var pausePressed = 0
     var nightPressed = 1
     var muteCount = 1
-    let happyArray = ["Great Job!","Keep it Up!", "Nice!", "Take That!", "WOOHOO!", "Math Punch!", "Bam!", "Pow!"]
     var previousAnswer = 0
     /// The interstitial ad
     var interstitial: GADInterstitial!
-    
+    /// Banner Ad
     lazy var adBannerView: GADBannerView = {
         let adBannerView = GADBannerView(adSize: kGADAdSizeSmartBannerPortrait)
         //Real
         adBannerView.adUnitID = "ca-app-pub-6279961815562254/1606286445"
         //Sample
         //adBannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        //
         adBannerView.delegate = self
         adBannerView.rootViewController = self
-        
         return adBannerView
     }()
     
     //MARK:- UIControls
     
+    /// The Game Scene that contains the Sprites and methods to interact with it
     lazy var gameScene: GameScene = {
         guard let gameScene = GameScene(fileNamed: "GameScene") else {
             fatalError("Could Not load GameScene!")
@@ -57,120 +57,26 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return gameScene
     }()
     
+    /// The view that is displayed to the user
     lazy var skView: SKView = {
         let skView = SKView(frame: .zero)
         skView.translatesAutoresizingMaskIntoConstraints = false
-        
         gameScene.scaleMode = .aspectFill
         skView.presentScene(gameScene)
-        
         return skView
     }()
     
+    ///MARK-: Header of the View
+    
+    /// The Lives Image View
     lazy var livesImageView: UIImageView = {
         let livesImageView = UIImageView(frame: .zero)
         livesImageView.translatesAutoresizingMaskIntoConstraints = false
         livesImageView.image = #imageLiteral(resourceName: "livesImage")
-        
         return livesImageView
     }()
     
-    lazy var tauntLabel: UILabel = {
-        let tauntLabel = UILabel(frame: .zero)
-        tauntLabel.translatesAutoresizingMaskIntoConstraints = false
-        tauntLabel.textColor = .clear
-        return tauntLabel
-    }()
-    
-    lazy var multiplyLabel: UILabel = {
-        let multiplyLabel = UILabel(frame: .zero)
-        multiplyLabel.translatesAutoresizingMaskIntoConstraints = false
-        multiplyLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
-        
-        multiplyLabel.textColor = .black
-        multiplyLabel.text = "x"
-        
-        return multiplyLabel
-    }()
-    
-    lazy var numberOneLabel: UILabel = {
-        let numberOneLabel = UILabel(frame: .zero)
-        numberOneLabel.translatesAutoresizingMaskIntoConstraints = false
-        numberOneLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
-        numberOneLabel.textColor = .black
-        numberOneLabel.textAlignment = .right
-        numberOneLabel.text = "\(firstNumber)"
-        
-        return numberOneLabel
-    }()
-    
-    lazy var numberTwoLabel: UILabel = {
-        let numberTwoLabel = UILabel(frame: .zero)
-        numberTwoLabel.translatesAutoresizingMaskIntoConstraints = false
-        numberTwoLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
-        numberTwoLabel.textColor = .black
-        numberTwoLabel.textAlignment = .right
-        while (firstNumber < secondNumber) {
-            firstNumber = arc4random_uniform(12) + 1
-            secondNumber = arc4random_uniform(3) + 1
-        }
-        numberTwoLabel.text = "\(secondNumber)"
-        
-        return numberTwoLabel
-    }()
-    
-    lazy var answerLabel: UILabel = {
-        let answerLabel = UILabel(frame: .zero)
-        answerLabel.translatesAutoresizingMaskIntoConstraints = false
-        answerLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
-        answerLabel.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
-        answerLabel.textAlignment = .center
-        answerLabel.textColor = .black
-        answerLabel.text = "0"
-        
-        return answerLabel
-    }()
-    
-    lazy var scoreTextLabel: UILabel = {
-        let scoreTextLabel = UILabel(frame: .zero)
-        scoreTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        scoreTextLabel.font = UIFont(name: "AvenirNext-Bold", size: 20)
-        scoreTextLabel.textColor = .black
-        scoreTextLabel.text = "Score:"
-        
-        return scoreTextLabel
-    }()
-    
-    lazy var scoreLabel: UILabel = {
-        let scoreLabel = UILabel(frame: .zero)
-        scoreLabel.translatesAutoresizingMaskIntoConstraints = false
-        scoreLabel.font = UIFont(name: "AvenirNext-Bold", size: 20)
-        scoreLabel.textColor = .black
-        scoreLabel.textAlignment = .right
-        scoreLabel.text = "\(score)"
-        return scoreLabel
-    }()
-    
-    lazy var highscoreTextLabel: UILabel = {
-        let highscoreTextLabel = UILabel(frame: .zero)
-        highscoreTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        highscoreTextLabel.font = UIFont(name: "AvenirNext-Bold", size: 30)
-        highscoreTextLabel.textColor = .black
-        highscoreTextLabel.text = "Best Score:"
-        highscoreTextLabel.textAlignment = .center
-        return highscoreTextLabel
-    }()
-    
-    lazy var highscoreLabel: UILabel = {
-        let highscoreLabel = UILabel(frame: .zero)
-        highscoreLabel.translatesAutoresizingMaskIntoConstraints = false
-        highscoreLabel.font = UIFont(name: "AvenirNext-Bold", size: 35)
-        highscoreLabel.textColor = .black
-        highscoreLabel.textAlignment = .center
-        highscoreLabel.text = "0"
-        return highscoreLabel
-    }()
-    
+    /// The lives of the user
     lazy var livesLabel: UILabel = {
         let livesLabel = UILabel(frame: .zero)
         livesLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -182,102 +88,188 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return livesLabel
     }()
     
-    lazy var playAgainButton: UIButton = {
-        let playAgainButton = UIButton(frame: .zero)
-        playAgainButton.translatesAutoresizingMaskIntoConstraints = false
-        playAgainButton.backgroundColor = #colorLiteral(red: 0.4565016739, green: 0.8918543782, blue: 0.6923041558, alpha: 1)
-        playAgainButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 30)
-        playAgainButton.setTitle("Play Again?", for: .normal)
-        playAgainButton.setTitleColor(.black, for: .normal)
-        playAgainButton.setTitleColor(.white, for: .highlighted)
-        playAgainButton.addTarget(self, action: #selector(userDidPressPlayAgainButton(_:)), for: .touchUpInside)
-        return playAgainButton
+    /// This label represents a title for the score itself
+    lazy var scoreTextLabel: UILabel = {
+        let scoreTextLabel = UILabel(frame: .zero)
+        scoreTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        scoreTextLabel.font = UIFont(name: "AvenirNext-Bold", size: 20)
+        scoreTextLabel.textColor = .black
+        scoreTextLabel.text = "Score:"
+        return scoreTextLabel
     }()
     
-    lazy var clearButton: UIButton = {
-        let clearButton = UIButton.gameButtonWithText(text: "Clear")
-        clearButton.addTarget(self, action: #selector(userDidPressClearButton(_:)), for: .touchUpInside)
-        
-        return clearButton
+    /// This label contains the score of the user
+    lazy var scoreLabel: UILabel = {
+        let scoreLabel = UILabel(frame: .zero)
+        scoreLabel.translatesAutoresizingMaskIntoConstraints = false
+        scoreLabel.font = UIFont(name: "AvenirNext-Bold", size: 20)
+        scoreLabel.textColor = .black
+        scoreLabel.textAlignment = .right
+        scoreLabel.text = "\(score)"
+        return scoreLabel
     }()
     
-    lazy var fightButton: UIButton = {
-        let fightButton = UIButton.gameButtonWithText(text: "Fight")
-        fightButton.addTarget(self, action: #selector(userDidPressFightButton(_:)), for: .touchUpInside)
-        
-        return fightButton
+    /// This label represents a title for the highscore itself
+    lazy var highscoreTextLabel: UILabel = {
+        let highscoreTextLabel = UILabel(frame: .zero)
+        highscoreTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        highscoreTextLabel.font = UIFont(name: "AvenirNext-Bold", size: 30)
+        highscoreTextLabel.textColor = .black
+        highscoreTextLabel.text = "Best Score:"
+        highscoreTextLabel.textAlignment = .center
+        return highscoreTextLabel
     }()
     
+    /// This label contains the highscore of the user
+    lazy var highscoreLabel: UILabel = {
+        let highscoreLabel = UILabel(frame: .zero)
+        highscoreLabel.translatesAutoresizingMaskIntoConstraints = false
+        highscoreLabel.font = UIFont(name: "AvenirNext-Bold", size: 35)
+        highscoreLabel.textColor = .black
+        highscoreLabel.textAlignment = .center
+        highscoreLabel.text = "0"
+        return highscoreLabel
+    }()
+    
+    ///MARK-: The Equation Section
+    
+    /// This label represents the first number to multiply
+    lazy var numberOneLabel: UILabel = {
+        let numberOneLabel = UILabel(frame: .zero)
+        numberOneLabel.translatesAutoresizingMaskIntoConstraints = false
+        numberOneLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
+        numberOneLabel.textColor = .black
+        numberOneLabel.textAlignment = .right
+        numberOneLabel.text = "\(firstNumber)"
+        return numberOneLabel
+    }()
+    
+    /// This label represents the second number to multiply
+    lazy var numberTwoLabel: UILabel = {
+        let numberTwoLabel = UILabel(frame: .zero)
+        numberTwoLabel.translatesAutoresizingMaskIntoConstraints = false
+        numberTwoLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
+        numberTwoLabel.textColor = .black
+        numberTwoLabel.textAlignment = .right
+        while (firstNumber < secondNumber) {
+            firstNumber = arc4random_uniform(12) + 1
+            secondNumber = arc4random_uniform(3) + 1
+        }
+        numberTwoLabel.text = "\(secondNumber)"
+        return numberTwoLabel
+    }()
+    
+    /// This label represents the multiplication symbol
+    lazy var multiplyLabel: UILabel = {
+        let multiplyLabel = UILabel(frame: .zero)
+        multiplyLabel.translatesAutoresizingMaskIntoConstraints = false
+        multiplyLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
+        multiplyLabel.textColor = .black
+        multiplyLabel.text = "x"
+        return multiplyLabel
+    }()
+    
+    /// This label is where the answer is inputted by the user
+    lazy var answerLabel: UILabel = {
+        let answerLabel = UILabel(frame: .zero)
+        answerLabel.translatesAutoresizingMaskIntoConstraints = false
+        answerLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 25)
+        answerLabel.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
+        answerLabel.textAlignment = .center
+        answerLabel.textColor = .black
+        answerLabel.text = "0"
+        return answerLabel
+    }()
+    
+    ///MARK-: Keypad
+    
+    /// The UIButton for inputting 1 into the answerLabel
     lazy var oneButton: UIButton = {
         let oneButton = UIButton.gameButtonWithText(text: "1")
         oneButton.addTarget(self, action: #selector(userDidPressOneButton(_:)), for: .touchUpInside)
-        
         return oneButton
     }()
     
+    /// The UIButton for inputting 2 into the answerLabel
     lazy var twoButton: UIButton = {
         let twoButton = UIButton.gameButtonWithText(text: "2")
         twoButton.addTarget(self, action: #selector(userDidPressTwoButton(_:)), for: .touchUpInside)
-        
         return twoButton
     }()
     
+    /// The UIButton for inputting 3 into the answerLabel
     lazy var threeButton: UIButton = {
         let threeButton = UIButton.gameButtonWithText(text: "3")
         threeButton.addTarget(self, action: #selector(userDidPressThreeButton(_:)), for: .touchUpInside)
-        
         return threeButton
     }()
     
+    /// The UIButton for inputting 4 into the answerLabel
     lazy var fourButton: UIButton = {
         let fourButton = UIButton.gameButtonWithText(text: "4")
         fourButton.addTarget(self, action: #selector(userDidPressFourButton(_:)), for: .touchUpInside)
-        
         return fourButton
     }()
     
+    /// The UIButton for inputting 5 into the answerLabel
     lazy var fiveButton: UIButton = {
         let fiveButton = UIButton.gameButtonWithText(text: "5")
         fiveButton.addTarget(self, action: #selector(userDidPressFiveButton(_:)), for: .touchUpInside)
-        
         return fiveButton
     }()
     
+    /// The UIButton for inputting 6 into the answerLabel
     lazy var sixButton: UIButton = {
         let sixButton = UIButton.gameButtonWithText(text: "6")
         sixButton.addTarget(self, action: #selector(userDidPressSixButton(_:)), for: .touchUpInside)
-        
         return sixButton
     }()
     
+    /// The UIButton for inputting 7 into the answerLabel
     lazy var sevenButton: UIButton = {
         let sevenButton = UIButton.gameButtonWithText(text: "7")
         sevenButton.addTarget(self, action: #selector(userDidPressSevenButton(_:)), for: .touchUpInside)
-        
         return sevenButton
     }()
     
+    /// The UIButton for inputting 8 into the answerLabel
     lazy var eightButton: UIButton = {
         let eightButton = UIButton.gameButtonWithText(text: "8")
         eightButton.addTarget(self, action: #selector(userDidPressEightButton(_:)), for: .touchUpInside)
-        
         return eightButton
     }()
     
+    /// The UIButton for inputting 9 into the answerLabel
     lazy var nineButton: UIButton = {
         let nineButton = UIButton.gameButtonWithText(text: "9")
         nineButton.addTarget(self, action: #selector(userDidPressNineButton(_:)), for: .touchUpInside)
-        
         return nineButton
     }()
     
+    /// The UIButton for inputting 0 into the answerLabel
     lazy var zeroButton: UIButton = {
         let zeroButton = UIButton.gameButtonWithText(text: "0")
         zeroButton.addTarget(self, action: #selector(userDidPressZeroButton(_:)), for: .touchUpInside)
-        
         return zeroButton
     }()
     
+    /// The UIButton for clearing the answerLabel
+    lazy var clearButton: UIButton = {
+        let clearButton = UIButton.gameButtonWithText(text: "Clear")
+        clearButton.addTarget(self, action: #selector(userDidPressClearButton(_:)), for: .touchUpInside)
+        return clearButton
+    }()
+    
+    /// The UIButton for submitting the contents of the answerLabel as an answer
+    lazy var fightButton: UIButton = {
+        let fightButton = UIButton.gameButtonWithText(text: "Fight")
+        fightButton.addTarget(self, action: #selector(userDidPressFightButton(_:)), for: .touchUpInside)
+        return fightButton
+    }()
+    
+    ///MARK-: The Pause Menu
+    
+    /// The UIButton that pauses the gameplay upon user press
     lazy var pauseButton: UIButton = {
         let pauseButton = UIButton(frame: .zero)
         pauseButton.translatesAutoresizingMaskIntoConstraints = false
@@ -290,6 +282,20 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return pauseButton
     }()
     
+    /// UIButton that resets the game when pressed
+    lazy var playAgainButton: UIButton = {
+        let playAgainButton = UIButton(frame: .zero)
+        playAgainButton.translatesAutoresizingMaskIntoConstraints = false
+        playAgainButton.backgroundColor = #colorLiteral(red: 0.4565016739, green: 0.8918543782, blue: 0.6923041558, alpha: 1)
+        playAgainButton.titleLabel?.font = UIFont(name: "ChalkboardSE-Bold", size: 30)
+        playAgainButton.setTitle("Play Again?", for: .normal)
+        playAgainButton.setTitleColor(.black, for: .normal)
+        playAgainButton.setTitleColor(.white, for: .highlighted)
+        playAgainButton.addTarget(self, action: #selector(userDidPressPlayAgainButton(_:)), for: .touchUpInside)
+        return playAgainButton
+    }()
+    
+    /// UIButton that changes the display colors when pressed
     lazy var nightButton: UIButton = {
         let nightButton = UIButton(frame: .zero)
         nightButton.translatesAutoresizingMaskIntoConstraints = false
@@ -303,6 +309,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return nightButton
     }()
     
+    /// UIButton that changes mutes/unmutes the audio of the app when pressed
     lazy var muteButton: UIButton = {
         let muteButton = UIButton(frame: .zero)
         muteButton.translatesAutoresizingMaskIntoConstraints = false
@@ -316,6 +323,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return muteButton
     }()
     
+    /// UIButton that starts the game
     lazy var startButton: UIButton = {
         let startButton = UIButton(frame: .zero)
         startButton.translatesAutoresizingMaskIntoConstraints = false
@@ -328,6 +336,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         return startButton
     }()
     
+    /// UIButton that pulls up the Leaderboard from Gamecenter
     lazy var checkLeaderboardButton: UIButton = {
         let checkLeaderboardButton = UIButton(frame: .zero)
         checkLeaderboardButton.translatesAutoresizingMaskIntoConstraints = false
@@ -356,38 +365,28 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         gameScene.skyCheck(nightCount: nightPressed)
         if startPressed == 1 {
             let achievement = GKAchievement(identifier: "startAdv")
-            
             achievement.percentComplete = Double(score / 5)
             achievement.showsCompletionBanner = true  // use Game Center's UI
-            
             GKAchievement.report([achievement], withCompletionHandler: nil)
         } else if startPressed == 10 {
             let achievement = GKAchievement(identifier: "beenNice")
-            
             achievement.percentComplete = Double(score / 5)
             achievement.showsCompletionBanner = true  // use Game Center's UI
-            
             GKAchievement.report([achievement], withCompletionHandler: nil)
         } else if startPressed == 20 {
             let achievement = GKAchievement(identifier: "beenWhile")
-            
             achievement.percentComplete = Double(score / 10)
             achievement.showsCompletionBanner = true  // use Game Center's UI
-            
             GKAchievement.report([achievement], withCompletionHandler: nil)
         } else if startPressed == 50 {
             let achievement = GKAchievement(identifier: "beenLong")
-            
             achievement.percentComplete = Double(score / 10)
             achievement.showsCompletionBanner = true  // use Game Center's UI
-            
             GKAchievement.report([achievement], withCompletionHandler: nil)
         } else if startPressed == 100 {
             let achievement = GKAchievement(identifier: "superLong")
-            
             achievement.percentComplete = Double(score / 20)
             achievement.showsCompletionBanner = true  // use Game Center's UI
-            
             GKAchievement.report([achievement], withCompletionHandler: nil)
         }
         startButton.isHidden = true
@@ -443,7 +442,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             highscoreLabel.isHidden = true
             highscoreTextLabel.isHidden = true
             pauseButton.setTitle("Pause", for: .normal)
-            tauntLabel.isHidden = true
             numberOneLabel.isHidden = false
             numberTwoLabel.isHidden = false
             multiplyLabel.isHidden = false
@@ -503,7 +501,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         zeroButton.isHidden = false
         clearButton.isHidden = false
         fightButton.isHidden = false
-        tauntLabel.isHidden = true
         playAgainButton.isHidden = true
         pauseButton.isHidden = false
         livesLabel.isHidden = false
@@ -602,10 +599,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             if score >= 25 && score < 50 {
                 if score == 25 {
                     let achievement = GKAchievement(identifier: "10p")
-                    
                     achievement.percentComplete = Double(score / 10)
                     achievement.showsCompletionBanner = true  // use Game Center's UI
-                    
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
                 firstNumber = arc4random_uniform(15) + 2
@@ -621,10 +616,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             } else if (score >= 50 && score < 75) {
                 if score == 50 {
                     let achievement = GKAchievement(identifier: "25p")
-                    
                     achievement.percentComplete = Double(score / 25)
                     achievement.showsCompletionBanner = true  // use Game Center's UI
-                    
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
                 firstNumber = arc4random_uniform(19) + 5
@@ -640,10 +633,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             } else if score >= 75 && score < 100 {
                 if score == 75 {
                     let achievement = GKAchievement(identifier: "50p")
-                    
                     achievement.percentComplete = Double(score / 30)
                     achievement.showsCompletionBanner = true  // use Game Center's UI
-                    
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
                 firstNumber = arc4random_uniform(25) + 7
@@ -659,10 +650,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             } else if score >= 100 {
                 if score == 100 {
                     let achievement = GKAchievement(identifier: "75p")
-                    
                     achievement.percentComplete = Double(score / 60)
                     achievement.showsCompletionBanner = true  // use Game Center's UI
-                    
                     GKAchievement.report([achievement], withCompletionHandler: nil)
                 }
                 firstNumber = arc4random_uniform(25) + 10
@@ -736,17 +725,13 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         if (nightPressed % 2) == 0 {
             if nightPressed == 2 {
                 let achievement = GKAchievement(identifier: "darkness")
-                
                 achievement.percentComplete = Double(score / 5)
                 achievement.showsCompletionBanner = true  // use Game Center's UI
-                
                 GKAchievement.report([achievement], withCompletionHandler: nil)
             } else if nightPressed == 50 {
                 let achievement = GKAchievement(identifier: "darknessMax")
-                
                 achievement.percentComplete = Double(score / 25)
                 achievement.showsCompletionBanner = true  // use Game Center's UI
-                
                 GKAchievement.report([achievement], withCompletionHandler: nil)
             }
             nightButton.setTitle("☀️ Mode", for: .normal)
@@ -811,17 +796,13 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             nightButton.setTitle("🌙 Mode", for: .normal)
             if nightPressed == 1 {
                 let achievement = GKAchievement(identifier: "darkness")
-                
                 achievement.percentComplete = Double(score / 5)
                 achievement.showsCompletionBanner = true  // use Game Center's UI
-                
                 GKAchievement.report([achievement], withCompletionHandler: nil)
             } else if nightPressed == 49 {
                 let achievement = GKAchievement(identifier: "darknessMax")
-                
                 achievement.percentComplete = Double(score / 25)
                 achievement.showsCompletionBanner = true  // use Game Center's UI
-                
                 GKAchievement.report([achievement], withCompletionHandler: nil)
             }
             view.backgroundColor = .white
@@ -944,7 +925,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     func hideEverything() {
         pauseButton.isHidden = true
-        tauntLabel.isHidden = true
         numberOneLabel.isHidden = true
         numberTwoLabel.isHidden = true
         multiplyLabel.isHidden = true
@@ -971,7 +951,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     func showEverything() {
         pauseButton.isHidden = false
-        tauntLabel.isHidden = true
         numberOneLabel.isHidden = false
         numberTwoLabel.isHidden = false
         multiplyLabel.isHidden = false
@@ -997,11 +976,9 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     func playCorrectSound() {
         let url = Bundle.main.url(forResource: "correct", withExtension: "mp3")!
-        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             guard let audioPlayer = audioPlayer else { return }
-            
             audioPlayer.prepareToPlay()
             audioPlayer.play()
         } catch let error as NSError {
@@ -1011,11 +988,9 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     func playIncorrectSound() {
         let url = Bundle.main.url(forResource: "incorrect", withExtension: "mp3")!
-        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             guard let audioPlayer = audioPlayer else { return }
-            
             audioPlayer.prepareToPlay()
             audioPlayer.play()
         } catch let error as NSError {
@@ -1025,11 +1000,9 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     func playBackSound() {
         let url = Bundle.main.url(forResource: "bgaudio", withExtension: "mp3")!
-        
         do {
             bgAudioPlayer = try AVAudioPlayer(contentsOf: url)
             guard let bgAudioPlayer = bgAudioPlayer else { return }
-            
             bgAudioPlayer.prepareToPlay()
             bgAudioPlayer.numberOfLoops = -1
             bgAudioPlayer.play()
@@ -1092,7 +1065,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     func authenticateLocalPlayer() {
         let localPlayer: GKLocalPlayer = GKLocalPlayer.localPlayer()
-        
         localPlayer.authenticateHandler = {(ViewController, error) -> Void in
             if((ViewController) != nil) {
                 // 1. Show login if player is not logged in
@@ -1139,7 +1111,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         view.backgroundColor = .white
         adBannerView.load(GADRequest())
         interstitial = createAndLoadInterstitial()
-        
+        authenticateLocalPlayer()
         let muteDefaults = UserDefaults.standard
         if muteDefaults.value(forKey: "mutePressed") != nil {
             muteCount = muteDefaults.value(forKey: "mutePressed") as! Int
@@ -1200,9 +1172,6 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         headerStackView.addArrangedSubview(pauseButton)
         headerStackView.addArrangedSubview(lifeStackView)
         view.addSubview(headerStackView)
-        
-        view.addSubview(tauntLabel)
-        
         view.addSubview(skView)
         
         let multiplicationStackView = UIStackView()
@@ -1258,14 +1227,8 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         constraints.append(headerStackView.topAnchor.constraintEqualToSystemSpacingBelow(view.safeAreaLayoutGuide.topAnchor, multiplier: 1.0))
         constraints.append(headerStackView.leadingAnchor.constraintEqualToSystemSpacingAfter(view.safeAreaLayoutGuide.leadingAnchor, multiplier: 1.0))
         constraints.append(view.safeAreaLayoutGuide.trailingAnchor.constraintEqualToSystemSpacingAfter(headerStackView.trailingAnchor, multiplier: 1.0))
-        
-        // Layout Taunt Label.
-        constraints.append(tauntLabel.topAnchor.constraintEqualToSystemSpacingBelow(headerStackView.bottomAnchor, multiplier: 1.0))
-        constraints.append(tauntLabel.leadingAnchor.constraintEqualToSystemSpacingAfter(view.safeAreaLayoutGuide.leadingAnchor, multiplier: 1.0))
-        constraints.append(view.safeAreaLayoutGuide.trailingAnchor.constraintEqualToSystemSpacingAfter(tauntLabel.trailingAnchor, multiplier: 1.0))
-        
         // Layout skView with our game scene.
-        constraints.append(skView.topAnchor.constraintEqualToSystemSpacingBelow(tauntLabel.bottomAnchor, multiplier: 1.0))
+        constraints.append(skView.topAnchor.constraintEqualToSystemSpacingBelow(headerStackView.bottomAnchor, multiplier: 1.0))
         constraints.append(skView.leadingAnchor.constraintEqualToSystemSpacingAfter(view.safeAreaLayoutGuide.leadingAnchor, multiplier: 1.0))
         constraints.append(view.safeAreaLayoutGuide.trailingAnchor.constraintEqualToSystemSpacingAfter(skView.trailingAnchor, multiplier: 1.0))
         
