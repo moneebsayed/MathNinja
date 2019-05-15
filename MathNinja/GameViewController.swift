@@ -12,6 +12,7 @@ import GameplayKit
 import AVFoundation
 import GoogleMobileAds
 import GameKit
+import StoreKit
 
 /// The GameViewController Class Contains the Game Content and Rules
 class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterControllerDelegate {
@@ -31,8 +32,10 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     var highscore = 0
     var pausePressed = 0
     var nightPressed = 1
+    var isMute = false
     var muteCount = 1
     var previousAnswer = 0
+    var allButtons = [UIButton]()
     /// The interstitial ad
     var interstitial: GADInterstitial!
     /// Banner Ad
@@ -61,6 +64,14 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     lazy var skView: SKView = {
         let skView = SKView(frame: .zero)
         skView.translatesAutoresizingMaskIntoConstraints = false
+        skView.layer.shadowColor = UIColor.black.cgColor
+        skView.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        skView.layer.masksToBounds = false
+        skView.layer.shadowRadius = 2.0
+        skView.layer.shadowOpacity = 0.5
+        skView.layer.cornerRadius = skView.frame.width/2
+        skView.layer.borderColor = UIColor.black.cgColor
+        skView.layer.borderWidth = 2.0
         gameScene.scaleMode = .aspectFill
         skView.presentScene(gameScene)
         return skView
@@ -168,6 +179,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         multiplyLabel.text = "x"
         return multiplyLabel
     }()
+    /// This label is to represent the equal sign
+    lazy var equalLabel: UILabel = {
+        let equalLabel = UILabel(frame: .zero)
+        equalLabel.translatesAutoresizingMaskIntoConstraints = false
+        equalLabel.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
+        equalLabel.textColor = .black
+        equalLabel.text = "="
+        return equalLabel
+    }()
     
     /// This label is where the answer is inputted by the user
     lazy var answerLabel: UILabel = {
@@ -178,6 +198,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         answerLabel.textAlignment = .center
         answerLabel.textColor = .black
         answerLabel.text = "0"
+        //Making Label Circular
+        answerLabel.layer.shadowColor = UIColor.black.cgColor
+        answerLabel.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        answerLabel.layer.masksToBounds = false
+        answerLabel.layer.shadowRadius = 2.0
+        answerLabel.layer.shadowOpacity = 0.5
+        answerLabel.layer.cornerRadius = answerLabel.frame.width/2
+        answerLabel.layer.borderColor = UIColor.black.cgColor
+        answerLabel.layer.borderWidth = 2.0
         return answerLabel
     }()
     
@@ -291,6 +320,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         playAgainButton.setTitle("Play Again?", for: .normal)
         playAgainButton.setTitleColor(.black, for: .normal)
         playAgainButton.setTitleColor(.white, for: .highlighted)
+        //Making Button Circular
+        playAgainButton.layer.shadowColor = UIColor.black.cgColor
+        playAgainButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        playAgainButton.layer.masksToBounds = false
+        playAgainButton.layer.shadowRadius = 2.0
+        playAgainButton.layer.shadowOpacity = 0.5
+        playAgainButton.layer.cornerRadius = 20
+        playAgainButton.layer.borderColor = UIColor.black.cgColor
+        playAgainButton.layer.borderWidth = 2.0
         playAgainButton.addTarget(self, action: #selector(userDidPressPlayAgainButton(_:)), for: .touchUpInside)
         return playAgainButton
     }()
@@ -305,6 +343,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         nightButton.isHidden = true
         nightButton.setTitleColor(.black, for: .normal)
         nightButton.setTitleColor(.white, for: .highlighted)
+        //Making Button Circular
+        nightButton.layer.shadowColor = UIColor.black.cgColor
+        nightButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        nightButton.layer.masksToBounds = false
+        nightButton.layer.shadowRadius = 2.0
+        nightButton.layer.shadowOpacity = 0.5
+        nightButton.layer.cornerRadius = 20
+        nightButton.layer.borderColor = UIColor.black.cgColor
+        nightButton.layer.borderWidth = 2.0
         nightButton.addTarget(self, action: #selector(userDidPressNightButton(_:)), for: .touchUpInside)
         return nightButton
     }()
@@ -319,6 +366,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         muteButton.setTitle("Mute", for: .normal)
         muteButton.setTitleColor(.black, for: .normal)
         muteButton.setTitleColor(.white, for: .highlighted)
+        //Making Button Circular
+        muteButton.layer.shadowColor = UIColor.black.cgColor
+        muteButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        muteButton.layer.masksToBounds = false
+        muteButton.layer.shadowRadius = 2.0
+        muteButton.layer.shadowOpacity = 0.5
+        muteButton.layer.cornerRadius = 20
+        muteButton.layer.borderColor = UIColor.black.cgColor
+        muteButton.layer.borderWidth = 2.0
         muteButton.addTarget(self, action: #selector(userDidPressMuteButton(_:)), for: .touchUpInside)
         return muteButton
     }()
@@ -334,6 +390,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         startButton.setTitle("Let's Play", for: .normal)
         startButton.setTitleColor(.black, for: .normal)
         startButton.setTitleColor(.white, for: .highlighted)
+        //Making Button Circular
+        startButton.layer.shadowColor = UIColor.black.cgColor
+        startButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        startButton.layer.masksToBounds = false
+        startButton.layer.shadowRadius = 2.0
+        startButton.layer.shadowOpacity = 0.5
+        startButton.layer.cornerRadius = 20
+        startButton.layer.borderColor = UIColor.black.cgColor
+        startButton.layer.borderWidth = 2.0
         startButton.addTarget(self, action: #selector(userDidPressStartButton(_:)), for: .touchUpInside)
         return startButton
     }()
@@ -347,6 +412,15 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         checkLeaderboardButton.setTitle("Check Leaderboard", for: .normal)
         checkLeaderboardButton.setTitleColor(.black, for: .normal)
         checkLeaderboardButton.setTitleColor(.white, for: .highlighted)
+        //Making Button Circular
+        checkLeaderboardButton.layer.shadowColor = UIColor.black.cgColor
+        checkLeaderboardButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        checkLeaderboardButton.layer.masksToBounds = false
+        checkLeaderboardButton.layer.shadowRadius = 2.0
+        checkLeaderboardButton.layer.shadowOpacity = 0.5
+        checkLeaderboardButton.layer.cornerRadius = 20
+        checkLeaderboardButton.layer.borderColor = UIColor.black.cgColor
+        checkLeaderboardButton.layer.borderWidth = 2.0
         checkLeaderboardButton.addTarget(self, action: #selector(userDidPressCKLeaderboardButton(_:)), for: .touchUpInside)
         return checkLeaderboardButton
     }()
@@ -363,6 +437,9 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         startDefaults.set(startPressed, forKey: "startPressed")
         startDefaults.synchronize()
         gameScene.skyCheck(nightCount: nightPressed)
+        checkLeaderboardButton.isHidden = true
+        startButton.layer.cornerRadius = 20
+        
         if startPressed == 1 {
             let achievement = GKAchievement(identifier: "startAdv")
             achievement.percentComplete = Double(score / 5)
@@ -442,6 +519,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
             numberOneLabel.isHidden = false
             numberTwoLabel.isHidden = false
             multiplyLabel.isHidden = false
+            equalLabel.isHidden = false
             oneButton.isHidden = false
             twoButton.isHidden = false
             threeButton.isHidden = false
@@ -510,6 +588,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         numberOneLabel.isHidden = false
         numberTwoLabel.isHidden = false
         multiplyLabel.isHidden = false
+        equalLabel.isHidden = false
         oneButton.isHidden = false
         twoButton.isHidden = false
         threeButton.isHidden = false
@@ -800,63 +879,31 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
                 GKAchievement.report([achievement], withCompletionHandler: nil)
             }
             nightButton.setTitle("☀️ Mode", for: .normal)
-            checkLeaderboardButton.setTitleColor(.white, for: .normal)
-            checkLeaderboardButton.setTitleColor(.black, for: .highlighted)
-            startButton.setTitleColor(.white, for: .normal)
-            startButton.setTitleColor(.black, for: .highlighted)
-            muteButton.setTitleColor(.white, for: .normal)
-            muteButton.setTitleColor(.black, for: .highlighted)
-            nightButton.setTitleColor(.white, for: .normal)
-            nightButton.setTitleColor(.black, for: .highlighted)
-            pauseButton.setTitleColor(.white, for: .normal)
             view.backgroundColor = .black
+            skView.layer.shadowColor = UIColor.white.cgColor
+            skView.layer.borderColor = UIColor.white.cgColor
             highscoreLabel.textColor = .white
             highscoreTextLabel.textColor = .white
             scoreLabel.textColor = .white
             scoreTextLabel.textColor = .white
             livesLabel.textColor = .white
-            playAgainButton.setTitleColor(.white, for: .normal)
             numberOneLabel.textColor = .white
             numberTwoLabel.textColor = .white
             multiplyLabel.textColor = .white
-            oneButton.setTitleColor(.white, for: .normal)
-            twoButton.setTitleColor(.white, for: .normal)
-            threeButton.setTitleColor(.white, for: .normal)
-            fourButton.setTitleColor(.white, for: .normal)
-            fiveButton.setTitleColor(.white, for: .normal)
-            sixButton.setTitleColor(.white, for: .normal)
-            sevenButton.setTitleColor(.white, for: .normal)
-            eightButton.setTitleColor(.white, for: .normal)
-            nineButton.setTitleColor(.white, for: .normal)
-            zeroButton.setTitleColor(.white, for: .normal)
-            clearButton.setTitleColor(.white, for: .normal)
-            fightButton.setTitleColor(.white, for: .normal)
+            equalLabel.textColor = .white
             answerLabel.backgroundColor = .orange
             answerLabel.textColor = .white
-            oneButton.setTitleColor(.black, for: .highlighted)
-            twoButton.setTitleColor(.black, for: .highlighted)
-            threeButton.setTitleColor(.black, for: .highlighted)
-            fourButton.setTitleColor(.black, for: .highlighted)
-            fiveButton.setTitleColor(.black, for: .highlighted)
-            sixButton.setTitleColor(.black, for: .highlighted)
-            sevenButton.setTitleColor(.black, for: .highlighted)
-            eightButton.setTitleColor(.black, for: .highlighted)
-            nineButton.setTitleColor(.black, for: .highlighted)
-            zeroButton.setTitleColor(.black, for: .highlighted)
-            clearButton.setTitleColor(.black, for: .highlighted)
-            fightButton.setTitleColor(.black, for: .highlighted)
-            oneButton.backgroundColor = .blue
-            twoButton.backgroundColor = .blue
-            threeButton.backgroundColor = .blue
-            fourButton.backgroundColor = .blue
-            fiveButton.backgroundColor = .blue
-            sixButton.backgroundColor = .blue
-            sevenButton.backgroundColor = .blue
-            eightButton.backgroundColor = .blue
-            nineButton.backgroundColor = .blue
-            zeroButton.backgroundColor = .blue
-            clearButton.backgroundColor = .blue
-            fightButton.backgroundColor = .blue
+            answerLabel.layer.shadowColor = UIColor.white.cgColor
+            answerLabel.layer.borderColor = UIColor.white.cgColor
+            pauseButton.setTitleColor(.white, for: .normal)
+            for button in allButtons {
+                button.layer.shadowColor = UIColor.white.cgColor
+                button.layer.borderColor = UIColor.white.cgColor
+                button.setTitleColor(.white, for: .normal)
+                button.setTitleColor(.black, for: .highlighted)
+                button.backgroundColor = .blue
+            }
+            
         } else { // Night Mode Disabled
             nightButton.setTitle("🌙 Mode", for: .normal)
             if nightPressed == 1 {
@@ -871,73 +918,44 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
                 GKAchievement.report([achievement], withCompletionHandler: nil)
             }
             view.backgroundColor = .white
-            checkLeaderboardButton.setTitleColor(.black, for: .normal)
-            checkLeaderboardButton.setTitleColor(.white, for: .highlighted)
-            startButton.setTitleColor(.black, for: .normal)
-            startButton.setTitleColor(.white, for: .highlighted)
-            muteButton.setTitleColor(.black, for: .normal)
-            muteButton.setTitleColor(.white, for: .highlighted)
-            nightButton.setTitleColor(.black, for: .normal)
-            nightButton.setTitleColor(.white, for: .highlighted)
+            skView.layer.shadowColor = UIColor.black.cgColor
+            skView.layer.borderColor = UIColor.black.cgColor
+            for button in allButtons {
+                button.layer.shadowColor = UIColor.black.cgColor
+                button.layer.borderColor = UIColor.black.cgColor
+                button.setTitleColor(.black, for: .normal)
+                button.setTitleColor(.white, for: .highlighted)
+                button.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
+            }
             pauseButton.setTitleColor(.black, for: .normal)
+            answerLabel.layer.shadowColor = UIColor.black.cgColor
+            answerLabel.layer.borderColor = UIColor.black.cgColor
             highscoreLabel.textColor = .black
             highscoreTextLabel.textColor = .black
             scoreLabel.textColor = .black
             scoreTextLabel.textColor = .black
             livesLabel.textColor = .black
-            playAgainButton.setTitleColor(.black, for: .normal)
             numberOneLabel.textColor = .black
             numberTwoLabel.textColor = .black
             multiplyLabel.textColor = .black
-            oneButton.setTitleColor(.black, for: .normal)
-            twoButton.setTitleColor(.black, for: .normal)
-            threeButton.setTitleColor(.black, for: .normal)
-            fourButton.setTitleColor(.black, for: .normal)
-            fiveButton.setTitleColor(.black, for: .normal)
-            sixButton.setTitleColor(.black, for: .normal)
-            sevenButton.setTitleColor(.black, for: .normal)
-            eightButton.setTitleColor(.black, for: .normal)
-            nineButton.setTitleColor(.black, for: .normal)
-            zeroButton.setTitleColor(.black, for: .normal)
-            clearButton.setTitleColor(.black, for: .normal)
-            fightButton.setTitleColor(.black, for: .normal)
+            equalLabel.textColor = .black
             answerLabel.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
             answerLabel.textColor = .black
-            oneButton.setTitleColor(.white, for: .highlighted)
-            twoButton.setTitleColor(.white, for: .highlighted)
-            threeButton.setTitleColor(.white, for: .highlighted)
-            fourButton.setTitleColor(.white, for: .highlighted)
-            fiveButton.setTitleColor(.white, for: .highlighted)
-            sixButton.setTitleColor(.white, for: .highlighted)
-            sevenButton.setTitleColor(.white, for: .highlighted)
-            eightButton.setTitleColor(.white, for: .highlighted)
-            nineButton.setTitleColor(.white, for: .highlighted)
-            zeroButton.setTitleColor(.white, for: .highlighted)
-            clearButton.setTitleColor(.white, for: .highlighted)
-            fightButton.setTitleColor(.white, for: .highlighted)
-            oneButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            twoButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            threeButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            fourButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            fiveButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            sixButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            sevenButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            eightButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            nineButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            zeroButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            clearButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
-            fightButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
         }
     }
-    
+    /**
+     
+ */
     /// This method determines if the game is muted
     func muteHandle() {
         // Game is muted
         if (muteCount % 2) == 0 {
+            isMute = true
             muteButton.setTitle("Unmute", for: .normal)
             bgAudioPlayer?.pause()
             audioPlayer?.stop()
         } else { // Game is unmuted
+            isMute = false
             muteButton.setTitle("Mute", for: .normal)
             bgAudioPlayer?.prepareToPlay()
             bgAudioPlayer?.play()
@@ -966,6 +984,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     func gameOver() {
         gameScene.gameOver()
         reportScoreToGC()
+        checkLeaderboardButton.isHidden = false
         if score > highscore {
             highscore = score
             highscoreLabel.text = "\(highscore)"
@@ -997,6 +1016,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         numberOneLabel.isHidden = true
         numberTwoLabel.isHidden = true
         multiplyLabel.isHidden = true
+        equalLabel.isHidden = true
         oneButton.isHidden = true
         twoButton.isHidden = true
         threeButton.isHidden = true
@@ -1024,6 +1044,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         numberOneLabel.isHidden = false
         numberTwoLabel.isHidden = false
         multiplyLabel.isHidden = false
+        equalLabel.isHidden = false
         oneButton.isHidden = false
         twoButton.isHidden = false
         threeButton.isHidden = false
@@ -1046,26 +1067,30 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     
     
     func playCorrectSound() {
-        let url = Bundle.main.url(forResource: "correct", withExtension: "mp3")!
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            guard let audioPlayer = audioPlayer else { return }
-            audioPlayer.prepareToPlay()
-            audioPlayer.play()
-        } catch let error as NSError {
-            print(error.description)
+        if !isMute {
+            let url = Bundle.main.url(forResource: "correct", withExtension: "mp3")!
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                guard let audioPlayer = audioPlayer else { return }
+                audioPlayer.prepareToPlay()
+                audioPlayer.play()
+            } catch let error as NSError {
+                print(error.description)
+            }
         }
     }
     
     func playIncorrectSound() {
-        let url = Bundle.main.url(forResource: "incorrect", withExtension: "mp3")!
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            guard let audioPlayer = audioPlayer else { return }
-            audioPlayer.prepareToPlay()
-            audioPlayer.play()
-        } catch let error as NSError {
-            print(error.description)
+        if !isMute {
+            let url = Bundle.main.url(forResource: "incorrect", withExtension: "mp3")!
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                guard let audioPlayer = audioPlayer else { return }
+                audioPlayer.prepareToPlay()
+                audioPlayer.play()
+            } catch let error as NSError {
+                print(error.description)
+            }
         }
     }
     
@@ -1204,6 +1229,7 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
     /// Function that is used upon the initial loading of the App
     override func viewDidLoad() {
         super.viewDidLoad()
+        allButtons = [startButton, checkLeaderboardButton, nightButton, muteButton, zeroButton, oneButton, twoButton, threeButton, fourButton, fiveButton, sixButton, sevenButton, eightButton, nineButton, fightButton, clearButton, muteButton, playAgainButton]
         // Load Ads
         adBannerView.load(GADRequest())
         interstitial = createAndLoadInterstitial()
@@ -1276,20 +1302,20 @@ class GameViewController: UIViewController, GADBannerViewDelegate, GKGameCenterC
         multiplicationStackView.distribution = .fill
         multiplicationStackView.addArrangedSubview(highscoreTextLabel)
         multiplicationStackView.addArrangedSubview(highscoreLabel)
-        multiplicationStackView.addArrangedSubview(numberOneLabel)
         
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.spacing = 10
+        stackView.spacing = 20
         stackView.alignment = .fill
-        stackView.distribution = .fill
-        
+        stackView.distribution = .equalSpacing
+        stackView.addArrangedSubview(numberOneLabel)
         stackView.addArrangedSubview(multiplyLabel)
         stackView.addArrangedSubview(numberTwoLabel)
+        stackView.addArrangedSubview(equalLabel)
+        //stackView.addArrangedSubview(answerLabel)
         stackView.addArrangedSubview(startButton)
         multiplicationStackView.addArrangedSubview(stackView)
-        
         view.addSubview(multiplicationStackView)
         let fourthButtonStackView = UIStackView.horizontalStackViewWithButtons(buttons: [clearButton, zeroButton, fightButton])
         let thirdButtonStackView = UIStackView.horizontalStackViewWithButtons(buttons: [oneButton, twoButton, threeButton])

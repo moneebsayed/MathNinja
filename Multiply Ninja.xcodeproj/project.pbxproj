@@ -12,6 +12,7 @@
 		A932CDD52070301700028548 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = A932CDD42070301700028548 /* Actions.sks */; };
 		A932CDDE2070301700028548 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A932CDDD2070301700028548 /* Assets.xcassets */; };
 		A932CDE12070301700028548 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A932CDDF2070301700028548 /* LaunchScreen.storyboard */; };
+		A9AC3A76226A87E300DD2898 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AC3A75226A87E300DD2898 /* StoreKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		A9E70FE52112E74100B2DE86 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */; };
 		A9ECB2672126066F00C5D28C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9ECB2662126066F00C5D28C /* AppDelegate.swift */; };
 		A9F009DE20FD49DF009FA561 /* UIButton-Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F009DA20FD49DF009FA561 /* UIButton-Game.swift */; };
@@ -35,6 +36,7 @@
 		A932CDDD2070301700028548 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A932CDE02070301700028548 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A932CDE22070301700028548 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9AC3A75226A87E300DD2898 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A9E70FE42112E74100B2DE86 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A9ECB2662126066F00C5D28C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A9F009DA20FD49DF009FA561 /* UIButton-Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton-Game.swift"; sourceTree = "<group>"; };
@@ -52,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9AC3A76226A87E300DD2898 /* StoreKit.framework in Frameworks */,
 				A9F314912106A63F0073F219 /* GameKit.framework in Frameworks */,
 				00445AC5BB10EFDD5A413C04 /* Pods_Multiply_Ninja.framework in Frameworks */,
 			);
@@ -63,6 +66,7 @@
 		04FB1E90A5E23688657304D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9AC3A75226A87E300DD2898 /* StoreKit.framework */,
 				A9F314902106A63F0073F219 /* GameKit.framework */,
 				0273CC73F357AADB76869FC1 /* Pods_MathNinja.framework */,
 				3AD45ADC2F1F7EACA4555DE5 /* Pods_Multiply_Ninja.framework */,
@@ -156,6 +160,9 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.GameCenter.iOS = {
+								enabled = 1;
+							};
+							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
 						};

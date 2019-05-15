@@ -32,11 +32,17 @@ class GameScene: SKScene {
     /// The daytime sky that displays during day mode
     var daySky: SKSpriteNode = SKSpriteNode()
     
-    /// The night time sky that displays during day mode
+    /// The daytime floor that displays during day mode
+    var dayFloor: SKSpriteNode = SKSpriteNode()
+    
+    /// The night time sky that displays during night mode
     var nightSky: SKSpriteNode = SKSpriteNode()
     
+    /// The night time floor that displays during night mode
+    var nightFloor: SKSpriteNode = SKSpriteNode()
+    
     /// The Array of positive affirmations to display on correct
-    let happyArray = ["Great Job!","Keep it Up!", "Nice!", "Take That!", "WOOHOO!", "Math Punch!", "Bam!", "Pow!"]
+    let happyArray = ["Great Job!","Keep it Up!", "Nice!", "Take That!", "WOOHOO!", "Math Punch!", "Bam!", "Pow!", "Awesome!"]
     
     
     /// Called after the view controller is added or removed from a
@@ -91,6 +97,18 @@ class GameScene: SKScene {
         if let someNightSky: SKSpriteNode = self.childNode(withName: "Night") as? SKSpriteNode {
             nightSky = someNightSky
             nightSky.physicsBody?.isDynamic = false
+        } else {
+            print("failed!")
+        }
+        if let someNightFloor: SKSpriteNode = self.childNode(withName: "Night Floor") as? SKSpriteNode {
+            nightFloor = someNightFloor
+            nightFloor.physicsBody?.isDynamic = false
+        } else {
+            print("failed!")
+        }
+        if let someDayFloor: SKSpriteNode = self.childNode(withName: "Day Floor") as? SKSpriteNode {
+            dayFloor = someDayFloor
+            dayFloor.physicsBody?.isDynamic = false
         } else {
             print("failed!")
         }
@@ -187,41 +205,24 @@ class GameScene: SKScene {
     
     /// Method to fire Good Guy's Projectile at Bad Guy
     func fireWeapon() {
-        weapon.isHidden = false
-        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
-        let moveToOtherSideX: SKAction = SKAction.moveTo(x: 261, duration: 0.5)
-        let moveToOtherSideY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.5)
-        let moveOutsideX: SKAction = SKAction.moveTo(x: 500, duration: 0.25)
-        //Hit Bad Guy
-        let rotateBadGuy: SKAction = SKAction.rotate(byAngle: 360, duration: 0.30)
-        let rotateBack: SKAction = SKAction.rotate(toAngle: 0, duration: 0.25, shortestUnitArc: false)
-        //Reload
-        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
-        let moveToBackX: SKAction = SKAction.moveTo(x: -147.9, duration: 0.25)
-        let moveToBackY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.25)
-        let seq = SKAction.sequence([fadeIn, moveOutsideX, moveToOtherSideY, fadeOut, moveToBackX, moveToBackY])
-        let badSeq = SKAction.sequence([rotateBadGuy, rotateBack, moveToOtherSideX, moveToOtherSideY])
-        weapon.run(seq)
-        enemy.run(badSeq)
+        let playerAttackSequence = SKAction.run {
+            self.player.run(SKAction(named: "playerAttack")!)
+            self.enemy.run(SKAction(named: "enemyHit")!)
+        }
+        player.run(SKAction.sequence([playerAttackSequence]))
     }
     
-    /// Method to fire Bad Guy's Projectile at Bad Guy
+    public func resetNodeLocations() {
+        player.run(SKAction.moveTo(x: -211.888, duration: 0.25))
+        enemy.run(SKAction.moveTo(x: 226.802, duration: 0.25))
+    }
+    /// Method to fire Bad Guy's Projectile at Good Guy
     func fireEnemyWeapon() {
-        enemyFire.isHidden = false
-        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
-        let moveToOtherSideY: SKAction = SKAction.moveTo(y: -30.05, duration: 0.5)
-        let moveOutsideX: SKAction = SKAction.moveTo(x: -500, duration: 0.25)
-        //Hit Good Guy
-        let rotateGoodGuy: SKAction = SKAction.rotate(byAngle: 360, duration: 0.30)
-        let rotateBack: SKAction = SKAction.rotate(toAngle: 0, duration: 0.25, shortestUnitArc: false)
-        //Reload
-        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
-        let moveToBackX: SKAction = SKAction.moveTo(x: -205.158, duration: 0.25)
-        let moveToWeapBackX: SKAction = SKAction.moveTo(x: 175.906, duration: 0.25)
-        let seq = SKAction.sequence([fadeIn, moveOutsideX, fadeOut, moveToWeapBackX, moveToOtherSideY])
-        let goodSeq = SKAction.sequence([rotateGoodGuy, rotateBack, moveToBackX, moveToOtherSideY])
-        enemyFire.run(seq)
-        player.run(goodSeq)
+        let enemyAttackSequence = SKAction.run {
+            self.enemy.run(SKAction(named: "enemyAttack")!)
+            self.player.run(SKAction(named: "playerHit")!)
+        }
+        enemy.run(enemyAttackSequence)
     }
     
     /// This method is called to check the game mode in regards to day/night
@@ -231,22 +232,24 @@ class GameScene: SKScene {
         if (nightCount % 2) == 0 {
             tauntLabel.fontColor = #colorLiteral(red: 0.7490196078, green: 0.3529411765, blue: 0.9490196078, alpha: 1)
             daySky.run(SKAction.hide())
+            dayFloor.run(SKAction.hide())
             nightSky.run(SKAction.unhide())
+            nightFloor.run(SKAction.unhide())
         } else {
             tauntLabel.fontColor = .blue
             nightSky.run(SKAction.hide())
+            nightFloor.run(SKAction.hide())
             daySky.run(SKAction.unhide())
+            dayFloor.run(SKAction.unhide())            
         }
     }
     
     /// Method is called to reset nodes back to their original states.
     public func playedAgain() {
+        resetNodeLocations()
         tauntLabel.isHidden = false
         gameOverLabel.isHidden = true
-        let fadeIn: SKAction = SKAction.fadeIn(withDuration: 0.1)
-        let moveToBackX: SKAction = SKAction.moveTo(x: -205.158, duration: 0.25)
-        let seq = SKAction.sequence([moveToBackX, fadeIn])
-        player.run(seq)
+        player.run(SKAction(named: "live")!)
     }
     
     /// Method is called to display the game over message and fade the enemy out.
@@ -255,10 +258,7 @@ class GameScene: SKScene {
         gameOverLabel.isHidden = false
         gameOverLabel.run(SKAction(named: "Special")!)
         enemy.run(SKAction(named: "Special")!)
-        let moveOutsideX: SKAction = SKAction.moveTo(x: -500, duration: 0.1)
-        let fadeOut: SKAction = SKAction.fadeOut(withDuration: 0.05)
-        let seq = SKAction.sequence([moveOutsideX, fadeOut])
-        player.run(seq)
+        player.run(SKAction(named: "death")!)
     }
     
     /// Helper Method to get the message to display for incorrect question

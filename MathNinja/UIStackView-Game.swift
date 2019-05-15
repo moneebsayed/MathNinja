@@ -15,7 +15,7 @@ public extension UIStackView {
     ///
     /// - Parameter buttons: the buttons to initialize the keypad with
     /// - Returns: a row of the keypad within a stackView
-    public static func horizontalStackViewWithButtons(buttons: [UIButton]) -> UIStackView {
+    static func horizontalStackViewWithButtons(buttons: [UIButton]) -> UIStackView {
         let buttonsStackView = UIStackView()
         buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
         buttonsStackView.axis = .horizontal

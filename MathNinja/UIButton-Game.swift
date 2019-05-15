@@ -15,7 +15,7 @@ public extension UIButton {
     ///
     /// - Parameter text: The text to put in the button
     /// - Returns: a completed button
-    public static func gameButtonWithText(text: String) -> UIButton {
+    static func gameButtonWithText(text: String) -> UIButton {
         let gameButton = UIButton(frame: .zero)
         gameButton.translatesAutoresizingMaskIntoConstraints = false
         gameButton.backgroundColor = #colorLiteral(red: 0.4751850367, green: 0.8376534581, blue: 0.9758662581, alpha: 1)
@@ -24,6 +24,15 @@ public extension UIButton {
         gameButton.setTitle(text, for: .normal)
         gameButton.setTitleColor(.black, for: .normal)
         gameButton.setTitleColor(.white, for: .highlighted)
+        //Making Button Circular
+        gameButton.layer.shadowColor = UIColor.black.cgColor
+        gameButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        gameButton.layer.masksToBounds = false
+        gameButton.layer.shadowRadius = 2.0
+        gameButton.layer.shadowOpacity = 0.5
+        gameButton.layer.cornerRadius = 20
+        gameButton.layer.borderColor = UIColor.black.cgColor
+        gameButton.layer.borderWidth = 2.0
         return gameButton
     }
 }
